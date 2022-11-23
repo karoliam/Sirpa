@@ -6,6 +6,7 @@ struct ContentView: View {
     
     @ObservedObject var model = ViewModel()
     @State var tripName = ""
+    @State var notes = ""
     
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -16,9 +17,12 @@ struct ContentView: View {
 
     var body: some View {
         HStack{
-            List(model.list) {
+            List(model.tripList) {
                 item in Text(item.tripName)
                 }
+            List(model.postList) {
+                item in Text(item.notes)
+            }
         }
   
         
@@ -47,7 +51,8 @@ struct ContentView: View {
 //        }
     }
     init() {
-         model.getMemories()
+         model.getTripNames()
+        model.getPosts()
     }
     private func addItem() {
         withAnimation {
