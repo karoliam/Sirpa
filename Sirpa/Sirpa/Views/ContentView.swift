@@ -1,14 +1,12 @@
-//
-//  ContentView.swift
-//  Sirpa
-//
-//  Created by iosdev on 9.11.2022.
-//
-
 import SwiftUI
 import CoreData
+import Firebase
 
 struct ContentView: View {
+    
+    @ObservedObject var model = ViewModel()
+    @State var tripName = ""
+    
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -17,31 +15,40 @@ struct ContentView: View {
     private var items: FetchedResults<Item>
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
+        HStack{
+            List(model.list) {
+                item in Text(item.tripName)
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
         }
+  
+        
+//        NavigationView {
+//            List {
+//                ForEach(items) { item in
+//                    NavigationLink {
+//                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+//                    } label: {
+//                        Text(item.timestamp!, formatter: itemFormatter)
+//                    }
+//                }
+//                .onDelete(perform: deleteItems)
+//            }
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    EditButton()
+//                }
+//                ToolbarItem {
+//                    Button(action: addItem) {
+//                        Label("Add Item", systemImage: "plus")
+//                    }
+//                }
+//            }
+//            Text("Select an item")
+//        }
     }
-
+    init() {
+         model.getMemories()
+    }
     private func addItem() {
         withAnimation {
             let newItem = Item(context: viewContext)
@@ -72,7 +79,10 @@ struct ContentView: View {
             }
         }
     }
+
 }
+
+
 
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
