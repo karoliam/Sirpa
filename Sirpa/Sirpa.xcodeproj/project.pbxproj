@@ -13,6 +13,7 @@
 		6211CC81292E376100E3A2C7 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6211CC80292E376100E3A2C7 /* Trip.swift */; };
 		6211CC83292E376B00E3A2C7 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6211CC82292E376B00E3A2C7 /* Posts.swift */; };
 		6211CC85292F6EB900E3A2C7 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6211CC84292F6EB900E3A2C7 /* ImagePicker.swift */; };
+		6211CC88292F7F7A00E3A2C7 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 6211CC87292F7F7A00E3A2C7 /* FirebaseStorage */; };
 		6AA71906291BCD4500F691FE /* SirpaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA71905291BCD4500F691FE /* SirpaApp.swift */; };
 		6AA71908291BCD4500F691FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA71907291BCD4500F691FE /* ContentView.swift */; };
 		6AA7190A291BCD4700F691FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AA71909291BCD4700F691FE /* Assets.xcassets */; };
@@ -68,6 +69,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6211CC7F292E370000E3A2C7 /* FirebaseFirestore in Frameworks */,
+				6211CC88292F7F7A00E3A2C7 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,6 +116,13 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		6211CC86292F7F7A00E3A2C7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6AA718F9291BCD4500F691FE = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +130,7 @@
 				6AA7191B291BCD4700F691FE /* SirpaTests */,
 				6AA71925291BCD4700F691FE /* SirpaUITests */,
 				6AA71903291BCD4500F691FE /* Products */,
+				6211CC86292F7F7A00E3A2C7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -194,6 +204,7 @@
 			name = Sirpa;
 			packageProductDependencies = (
 				6211CC7E292E370000E3A2C7 /* FirebaseFirestore */,
+				6211CC87292F7F7A00E3A2C7 /* FirebaseStorage */,
 			);
 			productName = Sirpa;
 			productReference = 6AA71902291BCD4500F691FE /* Sirpa.app */;
@@ -656,6 +667,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6211CC7D292E370000E3A2C7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		6211CC87292F7F7A00E3A2C7 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6211CC7D292E370000E3A2C7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 

@@ -15,6 +15,7 @@ class ViewModel: ObservableObject {
     
 
     func addTripData(postID: String, userID: String, tripName: String, timeAdded: String) {
+ 
         // Get a reference to the database
         let db = Firestore.firestore()
         
@@ -31,15 +32,27 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func addPostData(file: String, location: String, notes: String, timeAdded: String, tripID: String) {
+        // Get a reference to the database
+        let db = Firestore.firestore()
+        
+        // Add a document to the collection
+        db.collection("posts").addDocument(data: ["file": file, "location": location, "notes": notes, "timeAdded": timeAdded, "tripID": tripID]) { error in
+            if error == nil {
+                //no errors
+                //call get data to retreive the latest data
+                self.getPosts()
+            }
+            else {
+                // Handle the error
+            }
+        }
+    }
+    
     func getTripNames() {
         // Get a reference to the database
         let db = Firestore.firestore()
         // Read the documents at a specific path
-
-        
-        
-        
-        
         db.collection("trip").getDocuments { snapshot, error in
             
             // check for errors
@@ -58,8 +71,6 @@ class ViewModel: ObservableObject {
                         print("selflist tossa \(self.tripList)")
                     }
                 }
-                
-                
             }
             else {
                 // Handle the error
@@ -86,7 +97,7 @@ class ViewModel: ObservableObject {
                         // get all the documents and create Todos
                         self.postList = snapshot.documents.map { d in
                             // Create a todo item for each document returned
-                            return Posts(id: d.documentID , file: d["file"] as? String ?? "", location: d["location"] as? String ?? "", notes: d["notes"] as? String ?? "", tripId: d["tripId"] as? String ?? "" )
+                            return Posts(id: d.documentID , location: d["location"] as? String ?? "", notes: d["notes"] as? String ?? "", tripId: d["tripId"] as? String ?? "" )
                         }
                         print("postaukset tossa \(self.postList)")
                     }
