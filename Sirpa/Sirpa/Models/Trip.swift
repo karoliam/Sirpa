@@ -10,5 +10,8 @@ struct Trip: Identifiable {
     
     var id: String
     var tripName: String
+    var postID: String
+    var userID: String
+    var timeAdded: String
     
 }

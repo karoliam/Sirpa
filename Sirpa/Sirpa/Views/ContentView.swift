@@ -7,6 +7,19 @@ struct ContentView: View {
     @ObservedObject var model = ViewModel()
     @State var tripName = ""
     @State var notes = ""
+    @State var timeAdded = ""
+    @State var isPickerShowing = false
+    @State var selectedImage: UIImage?
+    //timestamp
+    func timeStamp() -> String {
+        let now = Date()
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let dateString = formatter.string(from: now)
+        return dateString
+    }
+
     
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -16,42 +29,60 @@ struct ContentView: View {
     private var items: FetchedResults<Item>
 
     var body: some View {
-        HStack{
+        VStack{
+            VStack {
+                if selectedImage != nil {
+                    Image(uiImage: selectedImage!)
+                        .resizable()
+                        .frame(width: 200, height: 200)
+
+                }
+                
+                Button {
+                    isPickerShowing = true
+                } label: {
+                    Text("Select photo")
+                }
+            }
+            .sheet(isPresented: $isPickerShowing, onDismiss: nil) {
+                // image picker
+                ImagePicker(selectedImage: $selectedImage, isPickerShowing: $isPickerShowing)
+            }
+
             List(model.tripList) {
                 item in Text(item.tripName)
                 }
             List(model.postList) {
-                item in Text(item.notes)
+                item in
+            HStack {
+                    Text(item.notes)
+                    Spacer()
+                    Button(action: {
+                        model.deletePost(postToDelete: item)
+                    }, label: {
+                        Image(systemName: "minus.circle")
+                    })
+                    .buttonStyle(BorderlessButtonStyle())
+                }
             }
-        }
-  
+
+            TextField("Trip name", text: $tripName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            Button(action: {
+                model.addTripData(postID: "testipostID", userID: "testiUserID", tripName: tripName, timeAdded: timeStamp())
+                // clear the text fields
+                tripName = ""
+        }, label: {
+            Text("Add item")
+        })
         
-//        NavigationView {
-//            List {
-//                ForEach(items) { item in
-//                    NavigationLink {
-//                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-//                    } label: {
-//                        Text(item.timestamp!, formatter: itemFormatter)
-//                    }
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    EditButton()
-//                }
-//                ToolbarItem {
-//                    Button(action: addItem) {
-//                        Label("Add Item", systemImage: "plus")
-//                    }
-//                }
-//            }
-//            Text("Select an item")
-//        }
     }
+                   }
+                 
+                   
     init() {
-         model.getTripNames()
+        model.getTripNames()
         model.getPosts()
     }
     private func addItem() {

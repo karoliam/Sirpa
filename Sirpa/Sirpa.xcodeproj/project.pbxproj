@@ -12,6 +12,7 @@
 		6211CC7F292E370000E3A2C7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6211CC7E292E370000E3A2C7 /* FirebaseFirestore */; };
 		6211CC81292E376100E3A2C7 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6211CC80292E376100E3A2C7 /* Trip.swift */; };
 		6211CC83292E376B00E3A2C7 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6211CC82292E376B00E3A2C7 /* Posts.swift */; };
+		6211CC85292F6EB900E3A2C7 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6211CC84292F6EB900E3A2C7 /* ImagePicker.swift */; };
 		6AA71906291BCD4500F691FE /* SirpaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA71905291BCD4500F691FE /* SirpaApp.swift */; };
 		6AA71908291BCD4500F691FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA71907291BCD4500F691FE /* ContentView.swift */; };
 		6AA7190A291BCD4700F691FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AA71909291BCD4700F691FE /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		6211CC7B292E363400E3A2C7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6211CC80292E376100E3A2C7 /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
 		6211CC82292E376B00E3A2C7 /* Posts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
+		6211CC84292F6EB900E3A2C7 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		6AA71902291BCD4500F691FE /* Sirpa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sirpa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AA71905291BCD4500F691FE /* SirpaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SirpaApp.swift; sourceTree = "<group>"; };
 		6AA71907291BCD4500F691FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 			children = (
 				6211CC80292E376100E3A2C7 /* Trip.swift */,
 				6211CC82292E376B00E3A2C7 /* Posts.swift */,
+				6211CC84292F6EB900E3A2C7 /* ImagePicker.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 				6AA7190F291BCD4700F691FE /* Persistence.swift in Sources */,
 				6AA71912291BCD4700F691FE /* Sirpa.xcdatamodeld in Sources */,
 				6AA71908291BCD4500F691FE /* ContentView.swift in Sources */,
+				6211CC85292F6EB900E3A2C7 /* ImagePicker.swift in Sources */,
 				6211CC83292E376B00E3A2C7 /* Posts.swift in Sources */,
 				6AA71906291BCD4500F691FE /* SirpaApp.swift in Sources */,
 			);
