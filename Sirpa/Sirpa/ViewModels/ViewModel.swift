@@ -12,7 +12,7 @@ class ViewModel: ObservableObject {
     
     @Published var tripList = [Trip]()
     @Published var postList = [Posts]()
-    
+
 
     func addTripData(postID: String, userID: String, tripName: String, timeAdded: String) {
  
@@ -97,7 +97,7 @@ class ViewModel: ObservableObject {
                         // get all the documents and create Todos
                         self.postList = snapshot.documents.map { d in
                             // Create a todo item for each document returned
-                            return Posts(id: d.documentID , location: d["location"] as? String ?? "", notes: d["notes"] as? String ?? "", tripId: d["tripId"] as? String ?? "" )
+                            return Posts(id: d.documentID , location: d["location"] as? String ?? "", notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "" )
                         }
                         print("postaukset tossa \(self.postList)")
                     }
@@ -111,6 +111,7 @@ class ViewModel: ObservableObject {
             
         }
     }
+    
     
     func deletePost(postToDelete: Posts) {
         // get reference to the database

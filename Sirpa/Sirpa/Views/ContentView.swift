@@ -8,10 +8,16 @@ struct ContentView: View {
     @ObservedObject var model = ViewModel()
     @State var tripName = ""
     @State var notes = ""
+    @State var id = ""
     @State var timeAdded = ""
     @State var isPickerShowing = false
     @State var selectedImage: UIImage?
     @State var retrievedImages = [UIImage]()
+    @State var tripID = ""
+    @State var imageDictionary = [String:UIImage]()
+    @State var imageList = [UIImage]()
+    @State var filteredImageDictionary = [String:UIImage]()
+    
     //timestamp
     func timeStamp() -> String {
         let now = Date()
@@ -22,7 +28,6 @@ struct ContentView: View {
         return dateString
     }
 
-    
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -66,7 +71,57 @@ struct ContentView: View {
             
             
             List(model.tripList) {
-                item in Text(item.tripName)
+                item in
+                    NavigationLink {
+                        Text("Item at \(item.tripName) with id \(item.id)")
+                        
+               
+                        Button("kissa") {
+                            
+                            var kissa = imageDictionary.filter{
+                                $0.key.contains("1QZMUpIbh1RjAYXoFQwS")
+                            }.map {
+                                $0.value
+                            }
+                            print("kissa \(kissa) \(imageDictionary)")
+                        }
+////
+//                        List($imageDictionary.values, id: \.self) { image in
+//                            Image(uiImage: image as! UIImage)
+//                                .resizable()
+//                                .frame(width: 200, height: 200)
+//                        }
+                        
+                        
+                        List(model.postList.filter {
+                            $0.tripID.contains(item.id)
+                        }) {
+                            item in
+                                Text(item.notes)
+                            List(imageDictionary.filter{
+                                $0.key.contains(item.id)
+                            }.map {
+                                $0.value
+                            }
+                                 , id: \.self) { item in
+                                Image(uiImage: item)
+                                    .resizable()
+                                    .frame(width: 200, height: 200)
+                            }
+                                 .frame(width: 200, height: 300)
+//                            List(retrievedImages, id: \.self) { image in
+//                                Image(uiImage: image)
+//                                    .resizable()
+//                                    .frame(width: 200, height: 200)
+//                            }
+                        }
+                
+                        Divider()
+                        
+                        
+                    } label: {
+                        Text(item.tripName)
+                    }
             }
             List(model.postList) {
                 item in
@@ -84,6 +139,7 @@ struct ContentView: View {
             Divider()
         
             HStack {
+            
                 List(retrievedImages, id: \.self) { image in
                     Image(uiImage: image)
                         .resizable()
@@ -133,10 +189,12 @@ struct ContentView: View {
 
                 // Save the data in the database in post collection
                 model.addPostData(file: path, location: "test", notes: notes, timeAdded: timeStamp(), tripID: "test")
-                    
-                        DispatchQueue.main.async {
-                            self.retrievedImages.append(self.selectedImage!)
-                        }
+                if selectedImage != nil {
+                    DispatchQueue.main.async {
+                        self.retrievedImages.append(self.selectedImage!)
+                    }
+                }
+                   
             }
         }
     }
@@ -147,11 +205,11 @@ struct ContentView: View {
         db.collection("posts").getDocuments { snapshot, error in
             if error == nil && snapshot != nil {
                 
-                var paths = [String]()
+                var paths = Dictionary<String, String>()
                 // loop through all the returned docs
                 for doc in snapshot!.documents {
                     // extract the file path
-                    paths.append(doc["file"] as! String)
+                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
                 }
                 
                 // loop through each file path and fetch the data from storage
@@ -159,8 +217,8 @@ struct ContentView: View {
                     // get a reference to storage
                     let storageRef = Storage.storage().reference()
                     // specify the path
-                    let fileRef = storageRef.child(path)
-
+                    let fileRef = storageRef.child(path.value)
+                    
                     // retreive the data
                     fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
                         // check for errors
@@ -169,6 +227,8 @@ struct ContentView: View {
                             if let image = UIImage(data: data!) {
                                 DispatchQueue.main.async {
                                     retrievedImages.append(image)
+                                    imageDictionary.updateValue(image, forKey: path.key)
+                                    
                                 }
                             }
                         }
@@ -176,6 +236,19 @@ struct ContentView: View {
                 } // end loop throughs
             }
         }
+    }
+    
+    func filteredImagesById(postIDforImage: String) -> Array<UIImage> {
+        filteredImageDictionary = imageDictionary.filter{
+            $0.key == postIDforImage
+        }
+        print("image dictionary funkkarissa \(imageDictionary)")
+        print("filtered dictionary \(filteredImageDictionary)")
+        for item in filteredImageDictionary {
+            imageList.append(item.value)
+        }
+        print("imagelist \(imageList)")
+        return imageList
     }
     
     init() {
