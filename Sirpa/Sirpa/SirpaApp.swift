@@ -28,7 +28,7 @@ struct SirpaApp: App {
   var body: some Scene {
     WindowGroup {
       NavigationView {
-        ContentView()
+        LaunchPage()
               .environment(\.managedObjectContext, persistenceController.container.viewContext)
       }
     }

@@ -68,7 +68,7 @@ struct ContentView: View {
                 ImagePicker(selectedImage: $selectedImage, isPickerShowing: $isPickerShowing)
             }
             .onAppear {
-                retreiveAllPhotos()
+                retreiveAllPostPhotos()
             }
             
             
@@ -203,7 +203,7 @@ struct ContentView: View {
         }
     }
     
-    func retreiveAllPhotos() {
+    func retreiveAllPostPhotos() {
         // get the data from the database
         let db = Firestore.firestore()
         db.collection("posts").getDocuments { snapshot, error in

@@ -12,6 +12,7 @@ class ViewModel: ObservableObject {
     
     @Published var tripList = [Trip]()
     @Published var postList = [Posts]()
+    @Published var userList = [User]()
 
     let db = Firestore.firestore()
 
@@ -48,6 +49,18 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func addUserData(file: String, homeCountry: String, username: String) {
+        
+        db.collection("userInfo").addDocument(data: ["file": file, "homeCountry": homeCountry, "username": username]) { error in
+            if error == nil {
+                self.getUserInfo()
+            }
+            else {
+                // handle error
+            }
+        }
+    }
+    
     func updatePostData(notes: String, id: String) {
         
         DispatchQueue.main.async {
@@ -59,6 +72,27 @@ class ViewModel: ObservableObject {
                 }
             }
 
+        }
+    }
+    
+    func getUserInfo() {
+        
+        db.collection("userInfo").getDocuments { snapshot, error in
+            
+            if error == nil {
+                if let snapshot = snapshot {
+                    DispatchQueue.main.async {
+                        self.userList = snapshot.documents.map { d in
+                            return User(id: d.documentID, file: d["file"] as? String ?? "", homeCountry: d["homeCountry"] as? String ?? "",
+                                        username: d["username"] as? String ?? ""
+                            )
+                            
+                        }
+                    }
+                } else {
+                    // error
+                }
+            }
         }
     }
     
