@@ -17,6 +17,8 @@ struct ContentView: View {
     @State var imageDictionary = [String:UIImage]()
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
+    @State private var presentAlert = false
+
     
     //timestamp
     func timeStamp() -> String {
@@ -75,28 +77,28 @@ struct ContentView: View {
                     NavigationLink {
                         Text("Item at \(item.tripName) with id \(item.id)")
                         
-               
-                        Button("kissa") {
-                            
-                            var kissa = imageDictionary.filter{
-                                $0.key.contains("1QZMUpIbh1RjAYXoFQwS")
-                            }.map {
-                                $0.value
-                            }
-                            print("kissa \(kissa) \(imageDictionary)")
-                        }
-////
-//                        List($imageDictionary.values, id: \.self) { image in
-//                            Image(uiImage: image as! UIImage)
-//                                .resizable()
-//                                .frame(width: 200, height: 200)
-//                        }
-                        
-                        
+                        // posts
                         List(model.postList.filter {
                             $0.tripID.contains(item.id)
                         }) {
                             item in
+                            Button("Edit") {
+                                presentAlert = true
+                            }
+                            .alert("Update", isPresented: $presentAlert, actions: {
+                                
+                                TextField("Update your notes", text: $notes)
+                 
+                                Button("Update") {
+                                    model.updatePostData(notes: notes, id: item.id)
+                                    notes = ""
+                                }
+                                Button("cancel", role: .cancel, action: {
+                                    presentAlert = false
+                                    notes = ""
+                                })
+                            })
+                  
                                 Text(item.notes)
                             List(imageDictionary.filter{
                                 $0.key.contains(item.id)
@@ -104,9 +106,11 @@ struct ContentView: View {
                                 $0.value
                             }
                                  , id: \.self) { item in
+                              
                                 Image(uiImage: item)
                                     .resizable()
                                     .frame(width: 200, height: 200)
+                           
                             }
                                  .frame(width: 200, height: 300)
 //                            List(retrievedImages, id: \.self) { image in

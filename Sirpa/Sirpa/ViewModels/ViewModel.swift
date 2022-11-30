@@ -13,11 +13,11 @@ class ViewModel: ObservableObject {
     @Published var tripList = [Trip]()
     @Published var postList = [Posts]()
 
+    let db = Firestore.firestore()
 
     func addTripData(postID: String, userID: String, tripName: String, timeAdded: String) {
  
         // Get a reference to the database
-        let db = Firestore.firestore()
         
         // Add a document to the collection
         db.collection("trip").addDocument(data: ["postID": postID, "userID": userID, "tripName": tripName, "timeAdded": timeAdded]) { error in
@@ -34,7 +34,6 @@ class ViewModel: ObservableObject {
     
     func addPostData(file: String, location: String, notes: String, timeAdded: String, tripID: String) {
         // Get a reference to the database
-        let db = Firestore.firestore()
         
         // Add a document to the collection
         db.collection("posts").addDocument(data: ["file": file, "location": location, "notes": notes, "timeAdded": timeAdded, "tripID": tripID]) { error in
@@ -49,9 +48,21 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func updatePostData(notes: String, id: String) {
+        
+        DispatchQueue.main.async {
+            self.db.collection("posts").document(id).updateData(["notes" : notes]) { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                } else {
+                    print("Note updated succesfully")
+                }
+            }
+
+        }
+    }
+    
     func getTripNames() {
-        // Get a reference to the database
-        let db = Firestore.firestore()
         // Read the documents at a specific path
         db.collection("trip").getDocuments { snapshot, error in
             
@@ -81,12 +92,11 @@ class ViewModel: ObservableObject {
     
     
     func getPosts() {
-        // Get a reference to the database
-        let db = Firestore.firestore()
+   
         // Read the documents at a specific path
         
         
-        db.collection("posts").getDocuments { snapshot, error in
+        db.collection("posts").addSnapshotListener { snapshot, error in
             
             // check for errors
             if error == nil {
@@ -110,12 +120,12 @@ class ViewModel: ObservableObject {
             }
             
         }
-    }
+            
+        }
     
     
     func deletePost(postToDelete: Posts) {
-        // get reference to the database
-        let db = Firestore.firestore()
+        
         // specify the document ot delete
         db.collection("posts").document(postToDelete.id).delete {error in
             // check for errors
