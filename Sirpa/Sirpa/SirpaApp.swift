@@ -9,12 +9,14 @@ import SwiftUI
 
 @main
 struct SirpaApp: App {
-    let persistenceController = PersistenceController.shared
-
+    //vaihdoin K
+    @StateObject private var dataController = DataController()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            //Vaihdoin K
+                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }

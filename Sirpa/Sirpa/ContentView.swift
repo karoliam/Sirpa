@@ -9,6 +9,10 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    //Coredata
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(sortDescriptors: []) var post: FetchedResults<OnlinePost>
+    
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -39,6 +43,25 @@ struct ContentView: View {
                 }
             }
             Text("Select an item")
+        }
+        //Coredata lista
+        List(post) { post in
+            Text(post.autoID ?? "Unknown")
+            Text(post.postID ?? "Unknown")
+        }
+        
+        Button("add") {
+            let firstNames = ["Ginny", "Harry", "Hermione", "Luna", "Ron"]
+            let lastNames = ["Granger", "Lovegood", "Potter", "Weasley"]
+            
+            let chosenFirstName = firstNames.randomElement()!
+            let chosenLastName = lastNames.randomElement()!
+            
+            let post = OnlinePost(context: moc)
+            post.autoID = "moi"
+            post.postID = "\(chosenFirstName) \(chosenLastName)"
+            
+            try? moc.save()
         }
     }
 
@@ -72,6 +95,7 @@ struct ContentView: View {
             }
         }
     }
+    
 }
 
 private let itemFormatter: DateFormatter = {

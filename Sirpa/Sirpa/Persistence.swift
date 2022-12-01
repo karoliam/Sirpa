@@ -7,6 +7,20 @@
 
 import CoreData
 
+//Lisäsin K
+class DataController: ObservableObject {
+    let container = NSPersistentContainer(name: "Sirpa")
+    
+    init() {
+        container.loadPersistentStores { descriptoin, error in
+            if let error = error {
+                print("Core Data failed to load: \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
+
 struct PersistenceController {
     static let shared = PersistenceController()
 
