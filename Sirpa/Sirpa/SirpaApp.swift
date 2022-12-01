@@ -11,12 +11,13 @@ import SwiftUI
 struct SirpaApp: App {
     //vaihdoin K
     @StateObject private var dataController = DataController()
-    
+    //
     var body: some Scene {
         WindowGroup {
             ContentView()
             //Vaihdoin K
                 .environment(\.managedObjectContext, dataController.container.viewContext)
+            //
         }
     }
 }

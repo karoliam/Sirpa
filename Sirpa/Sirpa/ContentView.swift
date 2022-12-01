@@ -12,6 +12,7 @@ struct ContentView: View {
     //Coredata
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var post: FetchedResults<OnlinePost>
+    //
     
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -64,6 +65,7 @@ struct ContentView: View {
             try? moc.save()
         }
     }
+    //
 
     private func addItem() {
         withAnimation {
