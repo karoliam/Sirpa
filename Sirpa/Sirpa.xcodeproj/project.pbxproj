@@ -26,6 +26,7 @@
 		6AA7191D291BCD4700F691FE /* SirpaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA7191C291BCD4700F691FE /* SirpaTests.swift */; };
 		6AA71927291BCD4700F691FE /* SirpaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA71926291BCD4700F691FE /* SirpaUITests.swift */; };
 		6AA71929291BCD4700F691FE /* SirpaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA71928291BCD4700F691FE /* SirpaUITestsLaunchTests.swift */; };
+		6AD5B89B293A5AFE0067C488 /* MapMarkers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD5B89A293A5AFE0067C488 /* MapMarkers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		6AA71922291BCD4700F691FE /* SirpaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SirpaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AA71926291BCD4700F691FE /* SirpaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SirpaUITests.swift; sourceTree = "<group>"; };
 		6AA71928291BCD4700F691FE /* SirpaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SirpaUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		6AD5B89A293A5AFE0067C488 /* MapMarkers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMarkers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 				6211CC82292E376B00E3A2C7 /* Posts.swift */,
 				624C50C929378B07004E9C27 /* User.swift */,
 				6211CC84292F6EB900E3A2C7 /* ImagePicker.swift */,
+				6AD5B89A293A5AFE0067C488 /* MapMarkers.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				624C50C829376DFF004E9C27 /* Login.swift in Sources */,
 				6AA71912291BCD4700F691FE /* Sirpa.xcdatamodeld in Sources */,
 				6AA71908291BCD4500F691FE /* ContentView.swift in Sources */,
+				6AD5B89B293A5AFE0067C488 /* MapMarkers.swift in Sources */,
 				624C50CC2938CD60004E9C27 /* FirstPage.swift in Sources */,
 				6211CC85292F6EB900E3A2C7 /* ImagePicker.swift in Sources */,
 				6211CC83292E376B00E3A2C7 /* Posts.swift in Sources */,
