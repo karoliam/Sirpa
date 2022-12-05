@@ -142,7 +142,7 @@ class ViewModel: ObservableObject {
                         // get all the documents and create Todos
                         self.postList = snapshot.documents.map { d in
                             // Create a todo item for each document returned
-                            return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "" )
+                            return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, timeAdded: d["timeAdded"] as? String ?? "", notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "")
                         }
                         print("postaukset tossa \(self.postList)")
                     }

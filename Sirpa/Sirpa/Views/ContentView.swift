@@ -179,7 +179,7 @@ struct ContentView: View {
             userID = item.userID
         }
         for item in model.postList {
-                mapMarkerNew = MapMarkers(id: item.id, latitude: item.latitude, longitude: item.longitude, file: item.file, notes: item.notes, timeStamp: timeStamp(), tripID: item.tripID, userID: userID)
+            mapMarkerNew = MapMarkers(id: item.id, latitude: item.latitude, longitude: item.longitude, file: item.file, notes: item.notes, timeStamp: item.timeAdded, tripID: item.tripID, userID: userID)
                 mapMarkers.append(mapMarkerNew)
         }
         return mapMarkers
