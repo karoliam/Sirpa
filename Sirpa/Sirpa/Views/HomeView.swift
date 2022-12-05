@@ -34,45 +34,47 @@ struct HomeView: View {
     ]
     
     var body: some View {
-        ZStack{
-            Map(coordinateRegion: $locationManager.region, interactionModes: [.all], showsUserLocation: true, annotationItems: locations, annotationContent: {
-                location in
-                MapMarker(coordinate: location.coordinate, tint: .red)
-
-            })
-            .onAppear(){
-                MKMapView.appearance().mapType = .hybridFlyover
-                MKMapView.appearance().pointOfInterestFilter = .excludingAll
-            }
-            
-            
-//            MapView(locations: locations, lManager: $locationManager.region)
-            
-                        VStack{
-                            if let location = locationManager.location{
-                                Text("**Current location:**\(location.latitude),\(location.longitude)")
-                                    .font(.callout)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            
-                            }
-                            Spacer()
-                            LocationButton{
-                                locationManager.requestLocation()
-                            }
-                            .frame(width: 180, height: 40)
-                            .cornerRadius(30)
-                            .symbolVariant(.fill)
-                            .foregroundColor(.white)
-                            Button("pinn"){
-                                let loc = locations.randomElement()
-                                locationManager.randomPinn(pinn: loc ?? Location(name: "Metropolia karamalmi", coordinate: CLLocationCoordinate2D(latitude: 60.223932, longitude: 24.758298)))
-                            }
-                        }
-                        .padding()
-            
-        }
+//        ZStack{
+//            Map(coordinateRegion: $locationManager.region, interactionModes: [.all], showsUserLocation: true, annotationItems: locations, annotationContent: {
+//                location in
+//                MapMarker(coordinate: location.coordinate, tint: .red)
+//
+//            })
+//            .onAppear(){
+//                MKMapView.appearance().mapType = .hybridFlyover
+//                MKMapView.appearance().pointOfInterestFilter = .excludingAll
+//            }
+//
+//
+////            MapView(locations: locations, lManager: $locationManager.region)
+//
+//                        VStack{
+//                            if let location = locationManager.location{
+//                                Text("**Current location:**\(location.latitude),\(location.longitude)")
+//                                    .font(.callout)
+//                                    .foregroundColor(.white)
+//                                    .padding()
+//                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+//
+//                            }
+//                            Spacer()
+//                            LocationButton{
+//                                locationManager.requestLocation()
+//                            }
+//                            .frame(width: 180, height: 40)
+//                            .cornerRadius(30)
+//                            .symbolVariant(.fill)
+//                            .foregroundColor(.white)
+//                            Button("pinn"){
+//                                let loc = locations.randomElement()
+//                                locationManager.randomPinn(pinn: loc ?? Location(name: "Metropolia karamalmi", coordinate: CLLocationCoordinate2D(latitude: 60.223932, longitude: 24.758298)))
+//                            }
+//                        }
+//                        .padding()
+//
+//        }
+        
+        Text("commented out")
     }
 }
 

@@ -28,7 +28,7 @@ struct ContentView: View {
                             })))
                         PostView()
                             .tabItem(){
-                                Image(systemName: "envelope.fill")
+                                Image(systemName: "plus")
                             }
                             .tag(2)
                         ProfileView()
@@ -49,7 +49,8 @@ struct ContentView: View {
                 
             }
         }
-        
+
+    
         private func handleSwipe(translation: CGFloat){
             if translation > minDragTranlationForSwipe && selectedTab > 0{
                 selectedTab -= 1
