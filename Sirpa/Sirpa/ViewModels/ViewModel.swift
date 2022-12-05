@@ -14,6 +14,7 @@ class ViewModel: ObservableObject {
     @Published var postList = [Posts]()
     @Published var userList = [User]()
 
+
     let db = Firestore.firestore()
 
     func addTripData(postID: String, userID: String, tripName: String, timeAdded: String) {
@@ -111,7 +112,7 @@ class ViewModel: ObservableObject {
                             // Create a todo item for each document returned
                             print("d tossa \(d)")
                             
-                            return Trip(id: d.documentID, tripName: d["tripName"] as? String ?? "", postID: d["postID"] as? String ?? "", userID: d["userID"] as? String ?? "", timeAdded: d["timeAdded"] as? String ?? "")
+                            return Trip(id: d.documentID, tripName: d["tripName"] as? String ?? "", userID: d["userID"] as? String ?? "", timeAdded: d["timeAdded"] as? String ?? "")
                         }
                         print("selflist tossa \(self.tripList)")
                     }
@@ -141,7 +142,7 @@ class ViewModel: ObservableObject {
                         // get all the documents and create Todos
                         self.postList = snapshot.documents.map { d in
                             // Create a todo item for each document returned
-                            return Posts(id: d.documentID , location: d["location"] as? String ?? "", notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "" )
+                            return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "" )
                         }
                         print("postaukset tossa \(self.postList)")
                     }

@@ -7,9 +7,9 @@
 
 import Foundation
 struct MapMarkers: Identifiable {
-    let id = UUID()
-    let lat: String
-    let long: String
+    let id: String
+    let latitude: Double
+    let longitude: Double
     let file: String
     let notes: String
     let timeStamp: String

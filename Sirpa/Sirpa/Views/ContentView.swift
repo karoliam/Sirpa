@@ -18,7 +18,9 @@ struct ContentView: View {
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
-
+    @State var mapMarkers = [MapMarkers]()
+    @State var mapMarkerNew = MapMarkers(id: "", latitude: 0.0, longitude: 0.0, file: "", notes: "", timeStamp: "", tripID: "", userID: "")
+    @State var userID = ""
     
     //timestamp
     func timeStamp() -> String {
@@ -51,6 +53,10 @@ struct ContentView: View {
                     isPickerShowing = true
                 } label: {
                     Text("Select photo")
+                }
+                
+                Button("click here") {
+                    print("adding data to marker \(addingDataToMapMarkers())")
                 }
                 
                 //Upload button
@@ -166,6 +172,19 @@ struct ContentView: View {
 
 }
             
+    
+    func addingDataToMapMarkers() -> Array<MapMarkers> {
+        
+        for item in model.tripList {
+            userID = item.userID
+        }
+        for item in model.postList {
+                mapMarkerNew = MapMarkers(id: item.id, latitude: item.latitude, longitude: item.longitude, file: item.file, notes: item.notes, timeStamp: timeStamp(), tripID: item.tripID, userID: userID)
+                mapMarkers.append(mapMarkerNew)
+        }
+        return mapMarkers
+    }
+    
     
     func uploadPhoto () {
         //make sure selected image property isnt nil

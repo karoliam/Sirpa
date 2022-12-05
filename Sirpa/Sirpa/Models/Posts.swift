@@ -9,7 +9,9 @@ import Foundation
 struct Posts: Identifiable {
     
     var id: String
-    var location: String
+    var file: String
+    var latitude: Double
+    var longitude: Double
     var notes: String
     var tripID: String
     
