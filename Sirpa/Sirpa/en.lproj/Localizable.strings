@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  Sirpa
+
+  Created by iosdev on 12/1/22.
+  
+*/
+"hello" = "Hello";
+"how are you" = "How are you";
+"trips" = "Trips";
+"followers" = "Followers";
+"following" = "Following";
+"search" = "Search";
+"discover" = "Discover";
+"home" = "Home";
+"profile" = "Profile";
+"shared" = "Shared";
+"trips" = "Trips";
+"edit" = "Edit";
+"delete" = "Delete";
+"save changes" = "Save changes";
+"create memory" = "Create memory";
+"trip" = "Trip";
+"notes" = "Notes";
+"use your voice to add notes" = "Use your voice to add notes";
+"publish" = "Publish";
+"save" = "Save";
+"edit profile" = "Edit profile";
+"update" = "Update";
+"add text" = "Add text";
+"view" = "View";
+"edit" = "Edit";
+"delete" = "Delete";
+"add" = "Add";
+"local storage" = "Local Storage";
+"enter here" = "Enter Here";
+"email" = "Email";
+"profile name" = "Profile Name";
+"random core data generator" = "Random Core Data Generator";
+"coredata list" = "Coredata List";
