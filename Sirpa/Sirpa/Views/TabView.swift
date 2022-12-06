@@ -3,7 +3,7 @@ import CoreData
 import Firebase
 import FirebaseStorage
 
-struct ContentView: View {
+struct TabView: View {
     // tabs
     @State private var selectedTab = 0
         @State private var oldSelectedTab = 0
@@ -74,6 +74,6 @@ private let itemFormatter: DateFormatter = {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        TabView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
