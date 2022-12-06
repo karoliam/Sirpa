@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  Sirpa
+
+  Created by iosdev on 12/1/22.
+  
+*/
+"hello" = "Terve";
+"how are you" = "Miten menee";
+"trips" = "Matkat";
+"followers" = "Seuraajat";
+"following" = "Seuratut";
+"search" = "Etsi";
+"discover" = "Löydä";
+"home" = "Koti";
+"profile" = "Profiili";
+"shared" = "Jaettu";
+"trips" = "Matkat";
+"edit" = "Muokkaa";
+"delete" = "Poista";
+"save changes" = "Tallenna muutokset";
+"create memory" = "Luo muisto";
+"trip" = "Matka";
+"notes" = "Muistiinpanot";
+"use your voice to add notes" = "Käytä ääntäsi lisätäksesi muistiinpanoja";
+"publish" = "Julkaise";
+"save" = "Tallenna";
+"edit profile" = "Muokkaa profiilia";
+"update" = "Päivitä";
+"add text" = "Lisää tekstiä";
+"view" = "Näkymä";
+"edit" = "Muokkaa";
+"delete" = "Poista";
+"add" = "Lisää";
+"local storage" = "Lokaali storaagi";
+"enter here" = "Täytä tänne";
+"email" = "Sähköposti";
+"profile name" = "Käyttäjä Tunnus";
+"random core data generator" = "Satunnainen Core Data Generaattori";
+"coredata list" = "Coredata lista";

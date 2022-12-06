@@ -28,7 +28,7 @@ struct SirpaApp: App {
   var body: some Scene {
     WindowGroup {
       NavigationView {
-        ContentView()
+        ContentView(coreDM: CoreDataManager())
               .environment(\.managedObjectContext, persistenceController.container.viewContext)
       }
     }
