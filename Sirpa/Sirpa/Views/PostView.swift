@@ -9,6 +9,7 @@ import SwiftUI
 import Firebase
 import FirebaseStorage
 
+
 struct PostView: View {
     @State private var username: String = ""
     @State var choiceMade = "Trips"

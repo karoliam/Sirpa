@@ -3,16 +3,16 @@ import CoreData
 import Firebase
 import FirebaseStorage
 
-struct TabView: View {
+struct BottomTab: View {
     // tabs
     @State private var selectedTab = 0
         @State private var oldSelectedTab = 0
         @State private var isPostingVisible = false
         let tabsTotal = 2
         let minDragTranlationForSwipe: CGFloat = 50
-    
 
-    
+
+
     var body:some View{
             VStack{
                 NavigationView{
@@ -44,15 +44,15 @@ struct TabView: View {
                             .highPriorityGesture(DragGesture().onEnded(({
                                 self.handleSwipe(translation: $0.translation.width)
                             })))
-                        
-                        
+
+
                     }
                 }
-                
+
             }
         }
 
-    
+
         private func handleSwipe(translation: CGFloat){
             if translation > minDragTranlationForSwipe && selectedTab > 0{
                 selectedTab -= 1
@@ -72,8 +72,8 @@ private let itemFormatter: DateFormatter = {
     return formatter
 }()
 
-struct ContentView_Previews: PreviewProvider {
+struct BottomTab_Previews: PreviewProvider {
     static var previews: some View {
-        TabView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        BottomTab().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

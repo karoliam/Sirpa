@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseStorage
+import CoreData
 
 struct Login: View {
     
@@ -14,11 +15,23 @@ struct Login: View {
 
     @State var username = ""
     @State var homeCountry = ""
+    @State var id = ""
     @State var selectedImage: UIImage?
     @State var retrievedImages = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
     @State var isPickerShowing = false
-
+    
+    // core data
+    let coreDM: CoreDataManager
+    //Saa textfieldistä arvon
+    @State  var onlineUserID: String = ""
+    
+    @State  var onlineUsers: [OnlineUser] = [OnlineUser]()
+    
+     func populateUsers() {
+        onlineUsers = coreDM.getAllOnlineUsers()
+    }
+    
     
     var body: some View {
         ZStack {
@@ -66,7 +79,7 @@ struct Login: View {
 
                         //Upload button
                     if selectedImage != nil && username != "" {
-                            NavigationLink (destination: ContentView()) {
+                            NavigationLink (destination: BottomTab()) {
                                 Text("Login")
                                     .font(
                                         .custom(
@@ -81,6 +94,7 @@ struct Login: View {
                             }.padding(20)
                                 .simultaneousGesture(TapGesture().onEnded{
                                     uploadPhoto()
+                                    populateUsers()
                                 })
 
                         }
@@ -135,24 +149,27 @@ struct Login: View {
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         self.retrievedImages.append(self.selectedImage!)
+                        id = model.userList[0].id
+                        print("id tossa \(id)")
+                        //                    coreDM.saveUserID(id)
+
                     }
+                   
                 }
                    
             }
+        
         }
+   
     }
-    
-    
-    
     init() {
         model.getUserInfo()
     }
-
 }
 
 
 
-struct LaunchPage_Previews: PreviewProvider {
+struct Login_Previews: PreviewProvider {
     static var previews: some View {
         Login()
     }
