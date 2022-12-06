@@ -12,8 +12,8 @@ struct Posts: Identifiable {
     var file: String
     var latitude: Double
     var longitude: Double
-    var timeAdded: String
     var notes: String
+    var timeAdded: String
     var tripID: String
     
 }

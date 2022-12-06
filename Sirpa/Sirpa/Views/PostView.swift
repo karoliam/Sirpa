@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseStorage
 
 struct PostView: View {
     @State private var username: String = ""
@@ -13,77 +15,209 @@ struct PostView: View {
     @State var chosenTripID = ""
     @ObservedObject var model = ViewModel()
     @State var tripName = ""
+    @State var notes = ""
 //    @State var tripNameList: Array<String>
     @State var tripID = ""
     @State private var selection = ""
+    @State var isPickerShowing = false
+    @State var selectedImage: UIImage?
+    @State var retrievedImages = [UIImage]()
+    @State var imageDictionary = [String:UIImage]()
+    @State var imageList = [UIImage]()
+    @State var filteredImageDictionary = [String:UIImage]()
+    @State private var presentAlert = false
     
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        animation: .default)
+    private var items: FetchedResults<Item>
     
     var body: some View {
-        ZStack{
-            Color.green.opacity(0.4)
+        ZStack {
+            Color(white: 0.07).edgesIgnoringSafeArea(.all)
             VStack{
-                HStack{
-                
-                                        Menu{
-                                            let tripNames = model.tripList.map{item in item.tripName + "#" + item.id}
-                                            ForEach(tripNames, id: \.self) { item in
-                                                Button(action: {
-                                                    choiceMade = String(item.split(separator: "#")[0])
-                                                    chosenTripID = String(item.split(separator: "#")[0])
-                                                }, label: {
-                                                    Text("\(String(item.split(separator: "#")[0]))")
-                                                })
-                                                       }
-                                        } label: {
-                                            Label(
-                                                title: {Text("\(choiceMade)")}, icon: {Image.init(systemName: "plus")}
-                                            )
-                                        }
-                                        .frame(width: 200, height: 30)
-                                        .border(Color.black, width:2)
-                                        .padding(.leading, 60)
-                                        Spacer()
-                                        Image(systemName: "plus").font(.system(size:90)).background(Color.red)
-                                            .padding(30)
-                                    }
-
-                    
-                    TextField("text field", text: $username)
-                        .onSubmit {
-                            print(username)
+                HStack(alignment: .top){
+                    Menu{
+                        let tripNames = model.tripList.map{item in item.tripName + "#" + item.id}
+                        ForEach(tripNames, id: \.self) { item in
+                            Button(action: {
+                                choiceMade = String(item.split(separator: "#")[0])
+                                chosenTripID = String(item.split(separator: "#")[0])
+                            }, label: {
+                                Text("\(String(item.split(separator: "#")[0]))")
+                            })
+                            .offset(x: -100)
                         }
-                        .padding(.leading, 60)
-                        .frame(width: 300, height: 200)
-                        .foregroundColor(Color.white)
-                        .border(Color.black, width: 5)
+                    } label: {
+                        Label(
+                            title: {Text("\(choiceMade)")}, icon: {Image.init(systemName: "plus")}
+                        )
+                    }
+                    .frame(width: 200, height: 40)
+                    .background(.white)
+                    .cornerRadius(4)
+                    .padding()
+
+                    VStack {
+                        if selectedImage == nil {
+                                Image("small-palm")
+                                    .frame(width: 120, height: 120)
+                                    .cornerRadius(8)
+                                    .overlay(Image(systemName: "camera.fill")
+                                        .foregroundColor(.white))
+
+                     
+                        }
+                        if selectedImage != nil {
+                            Image(uiImage: selectedImage!)
+                                .resizable()
+                                .frame(width: 120, height: 120)
+                        }
+                        Button {
+                            isPickerShowing = true
+                        } label: {
+                            Text("Select photo")
+                        }
+                    }
+                    .padding()
+
+   
+                }
+                VStack {
+                    TextEditor(text: $notes)
+                        .frame(height: 200)
+                        .padding()
                     
                     HStack{
-                        Button(action: {print("triplist \(model.tripList)")}, label: {
-                            Text("triplist")
-                        })
-                        .padding(60)
-                        Spacer()
-                        Button(action: {}, label: {
-                            Text("button")
-                        })
-                        .padding(60)
-                        
+                        //Upload button
+                        if selectedImage != nil {
+                            Button {
+                                // Upload image
+                                uploadPhoto()
+                                print("uploaded \(model.postList)")
+                            } label: {
+                                Text("Post")
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $isPickerShowing, onDismiss: nil) {
+                        // image picker
+                        ImagePicker(selectedImage: $selectedImage, isPickerShowing: $isPickerShowing)
+                    }
+                    .onAppear {
+                        retreiveAllPostPhotos()
                     }
                 }
-                
+                    
             }
+        }
+
+
             
         }
+
     init() {
     model.getTripNames()
     model.getPosts()
     }
+    //timestamp
+    func timeStamp() -> String {
+        let now = Date()
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let dateString = formatter.string(from: now)
+        return dateString
     }
-
-
-    struct PostView_Previews: PreviewProvider {
-        static var previews: some View {
-            PostView()
+    
+    func uploadPhoto() {
+        //make sure selected image property isnt nil
+        guard selectedImage != nil else {
+            return
+        }
+        
+        // Create storage reference
+        let storageRef = Storage.storage().reference()
+        // turn image into data
+        let imageData = selectedImage!.jpegData(compressionQuality: 0.8)
+        // Check that we were able to convert it to data
+        guard imageData != nil else {
+            return
+        }
+        
+        // specify file path and name
+        let path = "images/\(UUID().uuidString).jpg"
+        let fileRef = storageRef.child(path)
+        // upload that data
+        let uploadTask = fileRef.putData(imageData!, metadata: nil) {
+            metadata, error in
+            // check for errors
+            if error == nil && metadata != nil {
+                
+                // Save the data in the database in post collection
+                model.addPostData(file: path,  latitude: 0.0, longitude: 0.0, notes: notes, timeAdded: timeStamp(), tripID: chosenTripID)
+                print("adding data succesfully")
+                if selectedImage != nil {
+                    DispatchQueue.main.async {
+                        self.retrievedImages.append(self.selectedImage!)
+                    }
+                }
+                
+            }
         }
     }
+    
+    func retreiveAllPostPhotos() {
+        // get the data from the database
+        let db = Firestore.firestore()
+        db.collection("posts").getDocuments { snapshot, error in
+            if error == nil && snapshot != nil {
+                
+                var paths = Dictionary<String, String>()
+                // loop through all the returned docs
+                for doc in snapshot!.documents {
+                    // extract the file path
+                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
+                }
+                
+                // loop through each file path and fetch the data from storage
+                for path in paths {
+                    // get a reference to storage
+                    let storageRef = Storage.storage().reference()
+                    // specify the path
+                    let fileRef = storageRef.child(path.value)
+                    
+                    // retreive the data
+                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        // check for errors
+                        if error == nil && data != nil {
+                            // create a UIImage and put it in our array for display
+                            if let image = UIImage(data: data!) {
+                                DispatchQueue.main.async {
+                                    retrievedImages.append(image)
+                                    imageDictionary.updateValue(image, forKey: path.key)
+                                    
+                                }
+                            }
+                        }
+                    }
+                } // end loop throughs
+            }
+        }
+    }
+    
+    
+    
+    }
+
+
+
+struct PostView_Previews: PreviewProvider {
+    static var previews: some View {
+        PostView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    }
+}
+
 

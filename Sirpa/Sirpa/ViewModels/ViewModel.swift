@@ -34,11 +34,11 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func addPostData(file: String, location: String, notes: String, timeAdded: String, tripID: String) {
+    func addPostData(file: String, latitude: Double, longitude: Double, notes: String, timeAdded: String, tripID: String) {
         // Get a reference to the database
         
         // Add a document to the collection
-        db.collection("posts").addDocument(data: ["file": file, "location": location, "notes": notes, "timeAdded": timeAdded, "tripID": tripID]) { error in
+        db.collection("posts").addDocument(data: ["file": file, "latitude": latitude, "longitude": longitude, "notes": notes, "timeAdded": timeAdded, "tripID": tripID]) { error in
             if error == nil {
                 //no errors
                 //call get data to retreive the latest data
@@ -142,7 +142,7 @@ class ViewModel: ObservableObject {
                         // get all the documents and create Todos
                         self.postList = snapshot.documents.map { d in
                             // Create a todo item for each document returned
-                            return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, timeAdded: d["timeAdded"] as? String ?? "", notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "")
+                            return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, notes: d["notes"] as? String ?? "", timeAdded: d["timeAdded"] as? String ?? "", tripID: d["tripID"] as? String ?? "")
                         }
                         print("postaukset tossa \(self.postList)")
                     }

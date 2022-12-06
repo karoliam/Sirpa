@@ -10,7 +10,9 @@ struct ContentView: View {
         @State private var isPostingVisible = false
         let tabsTotal = 2
         let minDragTranlationForSwipe: CGFloat = 50
+    
 
+    
     var body:some View{
             VStack{
                 NavigationView{
