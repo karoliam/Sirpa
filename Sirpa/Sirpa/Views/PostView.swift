@@ -93,13 +93,10 @@ struct PostView: View {
                     HStack{
                         //Upload button
                         if selectedImage != nil {
-                            Button {
-                                // Upload image
-                                uploadPhoto()
-                                print("uploaded \(model.postList)")
-                            } label: {
-                                Text("Post")
-                            }
+                            NavigationLink("Post!", destination: ProfileView())
+                                .simultaneousGesture(TapGesture().onEnded{
+                                                     uploadPhoto()
+                                                 })
                         }
                     }
                     .sheet(isPresented: $isPickerShowing, onDismiss: nil) {

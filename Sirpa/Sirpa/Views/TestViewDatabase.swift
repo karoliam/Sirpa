@@ -73,6 +73,7 @@ struct TestViewDatabase: View {
                     Button {
                         // Upload image
                         uploadPhoto()
+                        
                     } label: {
                         Text("Upload photo")
                     }
