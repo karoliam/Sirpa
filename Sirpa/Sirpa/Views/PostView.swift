@@ -129,7 +129,8 @@ struct PostView: View {
                     }
                 }
                     
-            }
+            } .navigationBarBackButtonHidden(true)
+
         }
 
 

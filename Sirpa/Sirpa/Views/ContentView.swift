@@ -28,6 +28,7 @@ struct ContentView: View {
                             .highPriorityGesture(DragGesture().onEnded(({
                                 self.handleSwipe(translation: $0.translation.width)
                             })))
+                        
                         PostView()
                             .tabItem(){
                                 Image(systemName: "plus")
@@ -48,6 +49,8 @@ struct ContentView: View {
                         
                     }
                 }
+                .navigationBarBackButtonHidden(true)
+
                 
             }
         }

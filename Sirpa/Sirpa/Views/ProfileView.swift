@@ -62,7 +62,8 @@ struct ProfileView: View {
                     Spacer()
                 }
             }
-        }
+        }.navigationBarBackButtonHidden(true)
+
     }
 }
 
