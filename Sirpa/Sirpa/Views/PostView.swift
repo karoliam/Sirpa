@@ -26,6 +26,7 @@ struct PostView: View {
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
+    @State private var showNewTrip = false
     
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -39,27 +40,47 @@ struct PostView: View {
             Color(white: 0.07).edgesIgnoringSafeArea(.all)
             VStack{
                 HStack(alignment: .top){
-                    Menu{
-                        let tripNames = model.tripList.map{item in item.tripName + "#" + item.id}
-                        ForEach(tripNames, id: \.self) { item in
-                            Button(action: {
-                                choiceMade = String(item.split(separator: "#")[0])
-                                chosenTripID = String(item.split(separator: "#")[0])
-                            }, label: {
-                                Text("\(String(item.split(separator: "#")[0]))")
-                            })
-                            .offset(x: -100)
+                    VStack {
+                        Menu{
+                            
+                            Button("+ Add new trip") {
+                                showNewTrip = true
+                            }
+                            
+                            
+                            let tripNames = model.tripList.map{item in item.tripName + "#" + item.id}
+                            ForEach(tripNames, id: \.self) { item in
+                                Button(action: {
+                                    choiceMade = String(item.split(separator: "#")[0])
+                                    chosenTripID = String(item.split(separator: "#")[0])
+                                }, label: {
+                                    Text("\(String(item.split(separator: "#")[0]))")
+                                })
+                                .offset(x: -100)
+                            }
+                        } label: {
+                            Label(
+                                title: {Text("\(choiceMade)")}, icon: {Image.init(systemName: "plus")}
+                            )
                         }
-                    } label: {
-                        Label(
-                            title: {Text("\(choiceMade)")}, icon: {Image.init(systemName: "plus")}
-                        )
+                        .frame(width: 200, height: 40)
+                        .background(.white)
+                        .cornerRadius(4)
+                        .padding()
+                        if (showNewTrip == true){
+                            TextField("Trip name", text: $tripName)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            Button("Add") {
+                                model.addTripData(userID: "userID", tripName: tripName, timeAdded: timeStamp())
+                                choiceMade = tripName
+                                tripName = ""
+                                showNewTrip = false
+                            }
+                        }
                     }
-                    .frame(width: 200, height: 40)
-                    .background(.white)
-                    .cornerRadius(4)
-                    .padding()
-
+          
+                    
+                    
                     VStack {
                         if selectedImage == nil {
                                 Image("small-palm")
