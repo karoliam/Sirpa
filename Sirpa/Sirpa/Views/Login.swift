@@ -12,25 +12,27 @@ import CoreData
 struct Login: View {
     
     @ObservedObject var model = ViewModel()
+    @Environment (\.managedObjectContext) var managedObjectContext
 
+    
     @State var username = ""
     @State var homeCountry = ""
-    @State var id = ""
+    @State var userID: User?
     @State var selectedImage: UIImage?
     @State var retrievedImages = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
     @State var isPickerShowing = false
-    
+
     // core data
-    let coreDM: CoreDataManager
+//    let coreDM: CoreDataManager
     //Saa textfieldistä arvon
     @State  var onlineUserID: String = ""
     
     @State  var onlineUsers: [OnlineUser] = [OnlineUser]()
     
-     func populateUsers() {
-        onlineUsers = coreDM.getAllOnlineUsers()
-    }
+//     func populateUsers() {
+//        onlineUsers = coreDM.getAllOnlineUsers()
+//    }
     
     
     var body: some View {
@@ -58,6 +60,9 @@ struct Login: View {
                 .foregroundColor(.white)
                 .offset(y: -62)
                 VStack {
+                    Button("print") {
+                        print("print id \(CoreDataManager().getAllOnlineUsers())")
+                    }
                     TextField("Username", text: $username)
                         .frame(height: 55)
                             .textFieldStyle(PlainTextFieldStyle())
@@ -94,7 +99,7 @@ struct Login: View {
                             }.padding(20)
                                 .simultaneousGesture(TapGesture().onEnded{
                                     uploadPhoto()
-                                    populateUsers()
+                                 
                                 })
 
                         }
@@ -149,10 +154,7 @@ struct Login: View {
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         self.retrievedImages.append(self.selectedImage!)
-                        id = model.userList[0].id
-                        print("id tossa \(id)")
-                        //                    coreDM.saveUserID(id)
-
+                        CoreDataManager().saveUserID(userID: model.userList.map{$0.id}.last as! String)
                     }
                    
                 }
@@ -160,7 +162,7 @@ struct Login: View {
             }
         
         }
-   
+
     }
     init() {
         model.getUserInfo()

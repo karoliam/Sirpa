@@ -8,12 +8,12 @@
 import Foundation
 import CoreData
 
-class CoreDataManager {
+class CoreDataManager: ObservableObject {
     
     let persistentContainer: NSPersistentContainer
     
     init() {
-        persistentContainer = NSPersistentContainer(name: "String")
+        persistentContainer = NSPersistentContainer(name: "Sirpa")
         persistentContainer.loadPersistentStores { (description, error) in
             if let error = error {
                 fatalError("Core data store failed \(error.localizedDescription)")
@@ -22,12 +22,13 @@ class CoreDataManager {
     }
 
     func getAllOnlineUsers() -> [OnlineUser] {
-        
+
         let fetchRequest: NSFetchRequest<OnlineUser> = OnlineUser.fetchRequest()
         
         do {
             return try persistentContainer.viewContext.fetch(fetchRequest)
         } catch {
+            print("getAllOnlineUsers failed")
             return []
         }
     }
