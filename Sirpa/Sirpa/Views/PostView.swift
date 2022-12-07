@@ -27,6 +27,7 @@ struct PostView: View {
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
     @State private var showNewTrip = false
+//    @State private var is
     
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -39,6 +40,15 @@ struct PostView: View {
         ZStack {
             Color(white: 0.07).edgesIgnoringSafeArea(.all)
             VStack{
+                    Text("Create a new memory")
+                        .foregroundColor(.white)
+                        .font(
+                            .custom(
+                                "AmericanTypewriter",
+                                fixedSize: 24)
+                            .weight(.bold))
+                        .foregroundColor(.white)
+                        .padding(16)
                 HStack(alignment: .top){
                     VStack {
                         Menu{
@@ -88,8 +98,9 @@ struct PostView: View {
                                     .cornerRadius(8)
                                     .overlay(Image(systemName: "camera.fill")
                                         .foregroundColor(.white))
-
-                     
+                                    .simultaneousGesture(TapGesture().onEnded{
+                                                         isPickerShowing = true
+                                                     })
                         }
                         if selectedImage != nil {
                             Image(uiImage: selectedImage!)
@@ -107,14 +118,25 @@ struct PostView: View {
    
                 }
                 VStack {
-                    TextEditor(text: $notes)
-                        .frame(height: 200)
-                        .padding()
+                    ZStack(alignment: .leading) {
+                        TextEditor(text: $notes)
+                            .frame(height: 200)
+                            .padding()
+                        if(notes.isEmpty) {
+                            Text("Write or click the microphone to dictate your notes")
+                                .padding(24)
+                                .offset(y: -70)
+                                .foregroundColor(Color(white: 0.8))
+                            
+                        }
                     
+                            
+                    }
+           
                     HStack{
                         //Upload button
                         if selectedImage != nil {
-                            NavigationLink("Post!", destination: ProfileView())
+                            NavigationLink("Post!", destination: ContentView())
                                 .simultaneousGesture(TapGesture().onEnded{
                                                      uploadPhoto()
                                                  })
