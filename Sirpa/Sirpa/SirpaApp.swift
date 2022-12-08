@@ -19,8 +19,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct SirpaApp: App {
-    let persistenceController = PersistenceController.shared
+//    let persistenceController = PersistenceController.shared
     @StateObject private var coreDataManager = CoreDataManager()
+    
   // register app delegate for Firebase setup
   @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
@@ -29,7 +30,7 @@ struct SirpaApp: App {
     WindowGroup {
       NavigationView {
         Login()
-              .environment(\.managedObjectContext, persistenceController.container.viewContext)
+              .environment(\.managedObjectContext, coreDataManager.container.viewContext)
       }
     }
   }

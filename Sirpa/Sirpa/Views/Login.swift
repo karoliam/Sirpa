@@ -13,7 +13,8 @@ struct Login: View {
     
     @ObservedObject var model = ViewModel()
     @Environment (\.managedObjectContext) var managedObjectContext
-
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
+    FetchedResults<OnlineUser>
     
     @State var username = ""
     @State var homeCountry = ""
@@ -33,6 +34,8 @@ struct Login: View {
 //     func populateUsers() {
 //        onlineUsers = coreDM.getAllOnlineUsers()
 //    }
+
+
     
     
     var body: some View {
@@ -61,7 +64,7 @@ struct Login: View {
                 .offset(y: -62)
                 VStack {
                     Button("print") {
-                        print("print id \(CoreDataManager().getAllOnlineUsers())")
+                        print("print id \(Date())")
                     }
                     TextField("Username", text: $username)
                         .frame(height: 55)
@@ -150,11 +153,13 @@ struct Login: View {
             if error == nil && metadata != nil {
 
                 // Save the data in the database in post collection
-                model.addUserData(file: path, homeCountry: homeCountry, username: username)
+                model.addUserData(file: path, homeCountry: homeCountry, username: username, timeAdded: Date())
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         self.retrievedImages.append(self.selectedImage!)
-                        CoreDataManager().saveUserID(userID: model.userList.map{$0.id}.last as! String)
+                    }
+                    DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(5)) {
+                        CoreDataManager().saveUserID(userID: model.userList.map{$0.id}[0] as! String, context: managedObjectContext)
                     }
                    
                 }

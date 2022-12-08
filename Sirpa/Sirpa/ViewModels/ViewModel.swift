@@ -50,9 +50,9 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func addUserData(file: String, homeCountry: String, username: String) {
+    func addUserData(file: String, homeCountry: String, username: String, timeAdded: Date) {
         
-        db.collection("userInfo").addDocument(data: ["file": file, "homeCountry": homeCountry, "username": username]) { error in
+        db.collection("userInfo").addDocument(data: ["file": file, "homeCountry": homeCountry, "username": username, "timeAdded": timeAdded]) { error in
             if error == nil {
                 self.getUserInfo()
             }
@@ -85,10 +85,11 @@ class ViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         self.userList = snapshot.documents.map { d in
                             return User(id: d.documentID, file: d["file"] as? String ?? "", homeCountry: d["homeCountry"] as? String ?? "",
-                                        username: d["username"] as? String ?? ""
+                                        username: d["username"] as? String ?? "", timeAdded: d["timeAdded"] as! Date
+
                             )
                             
-                        }
+                        }.sorted(by: {$0.timeAdded.compare($1.timeAdded) == .orderedDescending})
                     }
                 } else {
                     // error

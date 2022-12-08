@@ -10,38 +10,42 @@ import CoreData
 
 class CoreDataManager: ObservableObject {
     
-    let persistentContainer: NSPersistentContainer
+    let container =  NSPersistentContainer(name: "Sirpa")
     
     init() {
-        persistentContainer = NSPersistentContainer(name: "Sirpa")
-        persistentContainer.loadPersistentStores { (description, error) in
+        container.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Core data store failed \(error.localizedDescription)")
             }
         }
     }
 
+    func save(context: NSManagedObjectContext) {
+        do {
+            try context.save()
+            print("jee data on tallennettu")
+        } catch {
+            print("buu data ei tallennettu")
+        }
+    }
+    
     func getAllOnlineUsers() -> [OnlineUser] {
 
         let fetchRequest: NSFetchRequest<OnlineUser> = OnlineUser.fetchRequest()
         
         do {
-            return try persistentContainer.viewContext.fetch(fetchRequest)
+            return try container.viewContext.fetch(fetchRequest)
         } catch {
             print("getAllOnlineUsers failed")
             return []
         }
     }
     
-    func saveUserID(userID: String) {
+    func saveUserID(userID: String, context: NSManagedObjectContext) {
             
-            let idUser = OnlineUser(context: persistentContainer.viewContext)
+            let idUser = OnlineUser(context: context)
             idUser.userID = userID
-        
-            do{
-                try persistentContainer.viewContext.save()
-            } catch {
-                print("Failed to save userid \(error)")
-            }
+            
+        save(context: context)
         }
     }

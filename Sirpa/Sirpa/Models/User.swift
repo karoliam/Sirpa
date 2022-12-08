@@ -12,5 +12,5 @@ struct User: Identifiable {
     var file: String
     var homeCountry: String
     var username: String
-    
+    var timeAdded: Date
 }

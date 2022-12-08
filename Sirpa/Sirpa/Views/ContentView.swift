@@ -26,8 +26,9 @@ struct ContentView: View {
                 TextField("Enter Userid", text: $onlineUserID)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 Button("Save") {
-                    coreDM.saveUserID(userID: onlineUserID)
-                    populateUsers()
+//                    coreDM.saveUserID(userID: onlineUserID)
+//                    populateUsers()
+                    print("lol")
                 }
                 
                 List(onlineUsers, id: \.self) { user in
