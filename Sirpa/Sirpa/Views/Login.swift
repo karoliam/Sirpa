@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseStorage
 import CoreData
+import FirebaseFirestore
 
 struct Login: View {
     
@@ -64,7 +65,9 @@ struct Login: View {
                 .offset(y: -62)
                 VStack {
                     Button("print") {
-                        print("print id \(Date())")
+                        for item in cdUserID {
+                            print("\(item.userID as! String)")
+                        }
                     }
                     TextField("Username", text: $username)
                         .frame(height: 55)
@@ -153,12 +156,12 @@ struct Login: View {
             if error == nil && metadata != nil {
 
                 // Save the data in the database in post collection
-                model.addUserData(file: path, homeCountry: homeCountry, username: username, timeAdded: Date())
+                model.addUserData(file: path, homeCountry: homeCountry, username: username, timeAdded: Timestamp())
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         self.retrievedImages.append(self.selectedImage!)
                     }
-                    DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(5)) {
+                    DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
                         CoreDataManager().saveUserID(userID: model.userList.map{$0.id}[0] as! String, context: managedObjectContext)
                     }
                    
