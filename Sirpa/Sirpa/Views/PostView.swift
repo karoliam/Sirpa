@@ -28,6 +28,10 @@ struct PostView: View {
     @State private var presentAlert = false
     @State private var showNewTrip = false
 //    @State private var is
+    // Voice Recognition
+    @StateObject var speechRecognizer = SpeechRecognizer()
+    @State private var isRecording = false
+    @State private var buttonText = "press to record"
     
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -129,7 +133,22 @@ struct PostView: View {
                                 .foregroundColor(Color(white: 0.8))
                             
                         }
-                    
+                        Button{(buttonText, action: {
+                            isRecording = !isRecording
+                            print($isRecording)
+                            if (isRecording == true) {
+                                buttonText = "press to stop recording"
+                                speechRecognizer.reset()
+                                speechRecognizer.transcribe()
+                            } else {
+                                buttonText = "press to record"
+                                speechRecognizer.stopTranscribing()
+                                notes = notes + " " + speechRecognizer.transcript
+                            }
+                        })} label: {
+                            Image(systemName: "mic")
+                        }.tint(.red)
+
                             
                     }
            
