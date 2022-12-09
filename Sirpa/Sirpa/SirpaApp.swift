@@ -29,7 +29,7 @@ struct SirpaApp: App {
   var body: some Scene {
     WindowGroup {
       NavigationView {
-        Login()
+        BottomTab()
               .environment(\.managedObjectContext, coreDataManager.container.viewContext)
       }
     }

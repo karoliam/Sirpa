@@ -27,7 +27,6 @@ struct PostView: View {
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
-    
     @Environment(\.managedObjectContext) private var viewContext
     
     @FetchRequest(

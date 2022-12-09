@@ -10,11 +10,16 @@ struct BottomTab: View {
         @State private var isPostingVisible = false
         let tabsTotal = 2
         let minDragTranlationForSwipe: CGFloat = 50
-
-
-
+    
+        @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
+        FetchedResults<OnlineUser>
     var body:some View{
             VStack{
+                Button("click") {
+                    for item in cdUserID {
+                        print("\(item.userID)")
+                    }
+                }
                 NavigationView{
                     TabView(selection : $selectedTab){
                         HomeView()
@@ -74,6 +79,8 @@ private let itemFormatter: DateFormatter = {
 
 struct BottomTab_Previews: PreviewProvider {
     static var previews: some View {
-        BottomTab().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        NavigationView {
+            BottomTab().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        }
     }
 }

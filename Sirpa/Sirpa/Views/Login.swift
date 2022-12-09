@@ -24,7 +24,7 @@ struct Login: View {
     @State var retrievedImages = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
     @State var isPickerShowing = false
-
+    
     // core data
 //    let coreDM: CoreDataManager
     //Saa textfieldistä arvon
@@ -36,9 +36,13 @@ struct Login: View {
 //        onlineUsers = coreDM.getAllOnlineUsers()
 //    }
 
+//    func getUserID () -> String{
+//            for item in cdUserID {
+//                fetchedID = item.userID!
+//            }
+//        return fetchedID
+//        }
 
-    
-    
     var body: some View {
         ZStack {
             VStack {
@@ -65,9 +69,7 @@ struct Login: View {
                 .offset(y: -62)
                 VStack {
                     Button("print") {
-                        for item in cdUserID {
-                            print("\(item.userID as! String)")
-                        }
+                        print("lol")
                     }
                     TextField("Username", text: $username)
                         .frame(height: 55)
@@ -90,7 +92,7 @@ struct Login: View {
 
                         //Upload button
                     if selectedImage != nil && username != "" {
-                            NavigationLink (destination: BottomTab()) {
+                        NavigationLink (destination: BottomTab()) {
                                 Text("Login")
                                     .font(
                                         .custom(
