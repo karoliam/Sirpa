@@ -9,7 +9,6 @@ import SwiftUI
 import Firebase
 import FirebaseStorage
 
-
 struct PostView: View {
     @State private var username: String = ""
     @State var choiceMade = "Trips"
@@ -27,6 +26,9 @@ struct PostView: View {
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
+    @State private var showNewTrip = false
+//    @State private var is
+    
     @Environment(\.managedObjectContext) private var viewContext
     
     @FetchRequest(
@@ -38,28 +40,57 @@ struct PostView: View {
         ZStack {
             Color(white: 0.07).edgesIgnoringSafeArea(.all)
             VStack{
+                    Text("Create a new memory")
+                        .foregroundColor(.white)
+                        .font(
+                            .custom(
+                                "AmericanTypewriter",
+                                fixedSize: 24)
+                            .weight(.bold))
+                        .foregroundColor(.white)
+                        .padding(16)
                 HStack(alignment: .top){
-                    Menu{
-                        let tripNames = model.tripList.map{item in item.tripName + "#" + item.id}
-                        ForEach(tripNames, id: \.self) { item in
-                            Button(action: {
-                                choiceMade = String(item.split(separator: "#")[0])
-                                chosenTripID = String(item.split(separator: "#")[0])
-                            }, label: {
-                                Text("\(String(item.split(separator: "#")[0]))")
-                            })
-                            .offset(x: -100)
+                    VStack {
+                        Menu{
+                            
+                            Button("+ Add new trip") {
+                                showNewTrip = true
+                            }
+                            
+                            
+                            let tripNames = model.tripList.map{item in item.tripName + "#" + item.id}
+                            ForEach(tripNames, id: \.self) { item in
+                                Button(action: {
+                                    choiceMade = String(item.split(separator: "#")[0])
+                                    chosenTripID = String(item.split(separator: "#")[0])
+                                }, label: {
+                                    Text("\(String(item.split(separator: "#")[0]))")
+                                })
+                                .offset(x: -100)
+                            }
+                        } label: {
+                            Label(
+                                title: {Text("\(choiceMade)")}, icon: {Image.init(systemName: "plus")}
+                            )
                         }
-                    } label: {
-                        Label(
-                            title: {Text("\(choiceMade)")}, icon: {Image.init(systemName: "plus")}
-                        )
+                        .frame(width: 200, height: 40)
+                        .background(.white)
+                        .cornerRadius(4)
+                        .padding()
+                        if (showNewTrip == true){
+                            TextField("Trip name", text: $tripName)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            Button("Add") {
+                                model.addTripData(userID: "userID", tripName: tripName, timeAdded: timeStamp())
+                                choiceMade = tripName
+                                tripName = ""
+                                showNewTrip = false
+                            }
+                        }
                     }
-                    .frame(width: 200, height: 40)
-                    .background(.white)
-                    .cornerRadius(4)
-                    .padding()
-
+          
+                    
+                    
                     VStack {
                         if selectedImage == nil {
                                 Image("small-palm")
@@ -67,8 +98,9 @@ struct PostView: View {
                                     .cornerRadius(8)
                                     .overlay(Image(systemName: "camera.fill")
                                         .foregroundColor(.white))
-
-                     
+                                    .simultaneousGesture(TapGesture().onEnded{
+                                                         isPickerShowing = true
+                                                     })
                         }
                         if selectedImage != nil {
                             Image(uiImage: selectedImage!)
@@ -86,14 +118,25 @@ struct PostView: View {
    
                 }
                 VStack {
-                    TextEditor(text: $notes)
-                        .frame(height: 200)
-                        .padding()
+                    ZStack(alignment: .leading) {
+                        TextEditor(text: $notes)
+                            .frame(height: 200)
+                            .padding()
+                        if(notes.isEmpty) {
+                            Text("Write or click the microphone to dictate your notes")
+                                .padding(24)
+                                .offset(y: -70)
+                                .foregroundColor(Color(white: 0.8))
+                            
+                        }
                     
+                            
+                    }
+           
                     HStack{
                         //Upload button
                         if selectedImage != nil {
-                            NavigationLink("Post!", destination: ProfileView())
+                            NavigationLink("Post!", destination: ContentView())
                                 .simultaneousGesture(TapGesture().onEnded{
                                                      uploadPhoto()
                                                  })
@@ -108,7 +151,8 @@ struct PostView: View {
                     }
                 }
                     
-            }
+            } .navigationBarBackButtonHidden(true)
+
         }
 
 

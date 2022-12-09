@@ -18,12 +18,12 @@ class ViewModel: ObservableObject {
 
     let db = Firestore.firestore()
 
-    func addTripData(postID: String, userID: String, tripName: String, timeAdded: String) {
+    func addTripData(userID: String, tripName: String, timeAdded: String) {
  
         // Get a reference to the database
         
         // Add a document to the collection
-        db.collection("trip").addDocument(data: ["postID": postID, "userID": userID, "tripName": tripName, "timeAdded": timeAdded]) { error in
+        db.collection("trip").addDocument(data: ["userID": userID, "tripName": tripName, "timeAdded": timeAdded]) { error in
             if error == nil {
                 //no errors
                 //call get data to retreive the latest data
