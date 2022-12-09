@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import FirebaseFirestore
+
 struct Trip: Identifiable {
     
     var id: String
     var tripName: String
     var userID: String
-    var timeAdded: String
+    var timeAdded: Timestamp
     
 }

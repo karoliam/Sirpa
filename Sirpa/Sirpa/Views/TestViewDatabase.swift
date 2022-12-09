@@ -27,7 +27,7 @@ struct TestViewDatabase: View {
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
     @State var mapMarkers = [MapMarkers]()
-    @State var mapMarkerNew = MapMarkers(id: "", latitude: 0.0, longitude: 0.0, file: "", notes: "", timeStamp: "", tripID: "", userID: "")
+    @State var mapMarkerNew = MapMarkers(id: "", latitude: 0.0, longitude: 0.0, file: "", notes: "", timeStamp: Timestamp(), tripID: "", userID: "")
     @State var userID = ""
     
     
@@ -217,7 +217,7 @@ struct TestViewDatabase: View {
             if error == nil && metadata != nil {
                 
                 // Save the data in the database in post collection
-                model.addPostData(file: path, latitude: 0.0, longitude: 0.0, notes: notes, timeAdded: timeStamp(), tripID: "test")
+                model.addPostData(file: path, latitude: 0.0, longitude: 0.0, notes: notes, tripID: "test", timeAdded: Timestamp())
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         self.retrievedImages.append(self.selectedImage!)

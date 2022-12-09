@@ -18,7 +18,7 @@ class ViewModel: ObservableObject {
 
     let db = Firestore.firestore()
 
-    func addTripData(userID: String, tripName: String, timeAdded: String) {
+    func addTripData(userID: String, tripName: String, timeAdded: Timestamp) {
  
         // Get a reference to the database
         
@@ -35,11 +35,11 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func addPostData(file: String, latitude: Double, longitude: Double, notes: String, timeAdded: String, tripID: String) {
+    func addPostData(file: String, latitude: Double, longitude: Double, notes: String, tripID: String, timeAdded: Timestamp) {
         // Get a reference to the database
         
         // Add a document to the collection
-        db.collection("posts").addDocument(data: ["file": file, "latitude": latitude, "longitude": longitude, "notes": notes, "timeAdded": timeAdded, "tripID": tripID]) { error in
+        db.collection("posts").addDocument(data: ["file": file, "latitude": latitude, "longitude": longitude, "notes": notes, "tripID": tripID, "timeAdded": timeAdded]) { error in
             if error == nil {
                 //no errors
                 //call get data to retreive the latest data
@@ -86,7 +86,7 @@ class ViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         self.userList = snapshot.documents.map { d in
                             return User(id: d.documentID, file: d["file"] as? String ?? "", homeCountry: d["homeCountry"] as? String ?? "",
-                                        username: d["username"] as? String ?? "", timeAdded: d["timeAdded"] as! Timestamp
+                                        username: d["username"] as? String ?? "", timeAdded: d["timeAdded"] as? Timestamp ?? Timestamp()
 
                             )
                             
@@ -114,8 +114,8 @@ class ViewModel: ObservableObject {
                             // Create a todo item for each document returned
                             print("d tossa \(d)")
                             
-                            return Trip(id: d.documentID, tripName: d["tripName"] as? String ?? "", userID: d["userID"] as? String ?? "", timeAdded: d["timeAdded"] as? String ?? "")
-                        }
+                            return Trip(id: d.documentID, tripName: d["tripName"] as? String ?? "", userID: d["userID"] as? String ?? "", timeAdded: d["timeAdded"] as? Timestamp ?? Timestamp())
+                        }.sorted(by: {$0.timeAdded.compare($1.timeAdded) == .orderedDescending})
                         print("selflist tossa \(self.tripList)")
                     }
                 }
@@ -144,7 +144,7 @@ class ViewModel: ObservableObject {
                         // get all the documents and create Todos
                         self.postList = snapshot.documents.map { d in
                             // Create a todo item for each document returned
-                            return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, notes: d["notes"] as? String ?? "", timeAdded: d["timeAdded"] as? String ?? "", tripID: d["tripID"] as? String ?? "")
+                            return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "",  timeAdded: d["timeAdded"] as? Timestamp ?? Timestamp())
                         }
                         print("postaukset tossa \(self.postList)")
                     }

@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import FirebaseFirestore
+
 struct Posts: Identifiable {
     
     var id: String
@@ -13,7 +15,7 @@ struct Posts: Identifiable {
     var latitude: Double
     var longitude: Double
     var notes: String
-    var timeAdded: String
     var tripID: String
+    var timeAdded: Timestamp
     
 }

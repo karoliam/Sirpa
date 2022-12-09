@@ -6,13 +6,15 @@
 //
 
 import Foundation
+import FirebaseFirestore
+
 struct MapMarkers: Identifiable {
     let id: String
     let latitude: Double
     let longitude: Double
     let file: String
     let notes: String
-    let timeStamp: String
+    let timeStamp: Timestamp
     let tripID: String
     let userID: String
 }

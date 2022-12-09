@@ -16,7 +16,7 @@ struct PostView: View {
     @ObservedObject var model = ViewModel()
     @State var tripName = ""
     @State var notes = ""
-//    @State var tripNameList: Array<String>
+    //    @State var tripNameList: Array<String>
     @State var tripID = ""
     @State private var selection = ""
     @State var isPickerShowing = false
@@ -27,14 +27,14 @@ struct PostView: View {
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
     @State private var showNewTrip = false
+    @State var localUserID = ""
+
 //    @State private var is
     
     @Environment(\.managedObjectContext) private var viewContext
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
+    FetchedResults<OnlineUser>
     
     var body: some View {
         ZStack {
@@ -58,11 +58,10 @@ struct PostView: View {
                             }
                             
                             
-                            let tripNames = model.tripList.map{item in item.tripName + "#" + item.id}
-                            ForEach(tripNames, id: \.self) { item in
+                            ForEach(model.tripList.map{item in item.tripName + "#" + item.id}, id: \.self) { item in
                                 Button(action: {
                                     choiceMade = String(item.split(separator: "#")[0])
-                                    chosenTripID = String(item.split(separator: "#")[0])
+                                    chosenTripID = String(item.split(separator: "#")[1])
                                 }, label: {
                                     Text("\(String(item.split(separator: "#")[0]))")
                                 })
@@ -81,15 +80,18 @@ struct PostView: View {
                             TextField("Trip name", text: $tripName)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                             Button("Add") {
-                                model.addTripData(userID: "userID", tripName: tripName, timeAdded: timeStamp())
+                                model.addTripData(userID: getUserID(), tripName: tripName, timeAdded: Timestamp())
                                 choiceMade = tripName
                                 tripName = ""
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    chosenTripID = String(model.tripList.map{item in item.tripName + "#" + item.id}[0].split(separator: "#")[1])
+                                }
                                 showNewTrip = false
+                                print("chosen trip id \(chosenTripID)")
                             }
                         }
                     }
           
-                    
                     
                     VStack {
                         if selectedImage == nil {
@@ -163,15 +165,23 @@ struct PostView: View {
     model.getTripNames()
     model.getPosts()
     }
-    //timestamp
-    func timeStamp() -> String {
-        let now = Date()
-        let formatter = DateFormatter()
-        formatter.timeZone = TimeZone.current
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        let dateString = formatter.string(from: now)
-        return dateString
+    
+    
+    func getUserID() -> String {
+        for item in cdUserID {
+            localUserID = item.userID!
+        }
+        return localUserID
     }
+//    //timestamp
+//    func timeStamp() -> String {
+//        let now = Date()
+//        let formatter = DateFormatter()
+//        formatter.timeZone = TimeZone.current
+//        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+//        let dateString = formatter.string(from: now)
+//        return dateString
+//    }
     
     func uploadPhoto() {
         //make sure selected image property isnt nil
@@ -198,8 +208,10 @@ struct PostView: View {
             if error == nil && metadata != nil {
                 
                 // Save the data in the database in post collection
-                model.addPostData(file: path,  latitude: 0.0, longitude: 0.0, notes: notes, timeAdded: timeStamp(), tripID: chosenTripID)
-                print("adding data succesfully")
+               
+                    model.addPostData(file: path,  latitude: 0.0, longitude: 0.0, notes: notes, tripID: chosenTripID, timeAdded: Timestamp())
+                    print("adding data succesfully")
+              
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         self.retrievedImages.append(self.selectedImage!)
