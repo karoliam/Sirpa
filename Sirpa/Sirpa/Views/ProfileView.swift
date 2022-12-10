@@ -46,7 +46,7 @@ struct ProfileView: View {
                         ForEach(0..<5){_ in
                             HStack(spacing: 4){
                                 ForEach(0..<2){_ in
-                                    NavigationLink(destination: DetailImageView(data: "Image")){
+                                    NavigationLink(destination: PicturesInTripsView()){
                                         Text("Open image")
                                             .frame(width: 200, height: 200)
                                             .background(Color.yellow)
