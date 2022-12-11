@@ -23,7 +23,9 @@ struct ProfileView: View {
     @State var selectedImage: UIImage?
     @State var retrievedImages = [UIImage]()
     @State var tripID = ""
+    @State var profilePhoto = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
+    @State var profileImageDictionary = [String:UIImage]()
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
@@ -34,36 +36,34 @@ struct ProfileView: View {
 
     @Environment(\.managedObjectContext) private var viewContext
     
-    
-//    @ObservedObject var model = ViewModel()
-//    @State var tripName = ""
-//    @State var notes = ""
-//    @State var id = ""
-//    @State var timeAdded = ""
-//    @State var selectedImage: UIImage?
-//    @State var retrievedImages = [UIImage]()
-//    @State var tripID = ""
-//    @State var imageDictionary = [String:UIImage]()
-//    @State var imageList = [UIImage]()
-//    @State var filteredImageDictionary = [String:UIImage]()
-//    @State var filteredImageList = [UIImage]()
+
 
     @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
     FetchedResults<OnlineUser>
-        
+
     
     var body: some View {
         ZStack{
             VStack{
                 VStack{
                     HStack{
-                        
-                        Image(systemName:"person.fill.turn.down")
-                            .font(.system(size: 100))
-                        
+                        VStack{
+                            Button("photo") {
+                                print("kuvalista \(profileImageDictionary.filter{$0.key.contains(getUserID())}.map{$0.value})")
+                            }
+//                            Image(uiImage: profileImageDictionary.filter{$0.key.contains(getUserID())}.map{$0.value}.first
+//                            }.map {
+//                                $0.value
+//                            }.first!)
+//                                .frame(width: 100, height: 100)
+                            Text("\(model.userList.filter{$0.id == getUserID() }.map{$0.username}.first as? String ?? "no username found")")
+                                .foregroundColor(.white)
+                        }
+                    
+
                         
                         VStack{
-                            Text("10")
+                            Text("\(String(model.tripList.filter {$0.userID.contains(getUserID())}.count))")
                             Text("trips")
                         }
                         VStack{
@@ -148,6 +148,7 @@ struct ProfileView: View {
                 .foregroundColor(.white)
                 .onAppear {
                     retreiveAllPostPhotos()
+                    retreiveAllProfilePhotos()
                 }
                 .navigationBarBackButtonHidden(true)
             
@@ -203,6 +204,83 @@ struct ProfileView: View {
         print("imagelist \(imageList)")
         return imageList
     }
+    
+//    func retrieveProfilePhoto() {
+//        // get the data from the database
+//        let db = Firestore.firestore()
+//        let docRef = db.collection("user").document("CwCPvoeexar6nh0YKdWq")
+//
+//        docRef.getDocument { (document, error) in
+//            guard error == nil else {
+//                print("error", error ?? "")
+//                return
+//            }
+//
+//            if let document = document, document.exists {
+//                let data = document.data()
+//                if let data = data {
+//                    print("data", data)
+//                    let file = data["file"] as? String ?? ""
+//                    // get a reference to storage
+//                    let storageRef = Storage.storage().reference()
+//                    // specify the path
+//                    let fileRef = storageRef.child(file)
+//
+//                    // retreive the data
+//                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+//                        // check for errors
+//                        if error == nil && data != nil {
+//                            // create a UIImage and put it in our array for display
+//                            if let image = UIImage(data: data!) {
+//                                DispatchQueue.main.async {
+//                                    profilePhoto.append(image)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+    func retreiveAllProfilePhotos() {
+        // get the data from the database
+        let db = Firestore.firestore()
+        db.collection("user").getDocuments { snapshot, error in
+            if error == nil && snapshot != nil {
+                
+                var paths = Dictionary<String, String>()
+                // loop through all the returned docs
+                for doc in snapshot!.documents {
+                    // extract the file path
+                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
+                    
+                }
+                
+                // loop through each file path and fetch the data from storage
+                for path in paths {
+                    // get a reference to storage
+                    let storageRef = Storage.storage().reference()
+                    // specify the path
+                    let fileRef = storageRef.child(path.value)
+                    // retreive the data
+                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        // check for errors
+                        if error == nil && data != nil {
+                            // create a UIImage and put it in our array for display
+                            if let image = UIImage(data: data!) {
+                                DispatchQueue.main.async {
+                                    profileImageDictionary.updateValue(image, forKey: path.key)
+                                    
+                                }
+                            }
+                        }
+                    }
+                } // end loop throughs
+            }
+        }
+    }
+    
         
         func retreiveAllPostPhotos() {
             // get the data from the database
@@ -211,10 +289,12 @@ struct ProfileView: View {
                 if error == nil && snapshot != nil {
                     
                     var paths = Dictionary<String, String>()
+                    var profilePhotoPath = []
                     // loop through all the returned docs
                     for doc in snapshot!.documents {
                         // extract the file path
                         paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
+                        
                     }
                     
                     // loop through each file path and fetch the data from storage
@@ -223,7 +303,6 @@ struct ProfileView: View {
                         let storageRef = Storage.storage().reference()
                         // specify the path
                         let fileRef = storageRef.child(path.value)
-                        
                         // retreive the data
                         fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
                             // check for errors
@@ -245,6 +324,7 @@ struct ProfileView: View {
         init() {
             model.getTripNames()
             model.getPosts()
+            model.getUserInfo()
         }
         func getUserID() -> String {
             DispatchQueue.main.async {
