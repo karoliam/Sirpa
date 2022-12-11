@@ -91,7 +91,6 @@ struct PostView: View {
                             }
                         }
                     }
-          
                     
                     VStack {
                         if selectedImage == nil {
