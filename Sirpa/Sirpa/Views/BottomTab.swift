@@ -41,7 +41,7 @@ struct BottomTab: View {
                         ProfileView()
                         .tabItem(){
                             Image(systemName: "person.fill")
-                            Text("Home")
+                            Text("Profile")
                         }
                         .toolbar(.visible, for: .tabBar)
                         .toolbarBackground(Color.black, for: .tabBar)
