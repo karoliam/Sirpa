@@ -57,7 +57,7 @@ struct ProfileView: View {
             VStack{
                 VStack{
                     HStack{
-          
+                        
                         Image(systemName:"person.fill.turn.down")
                             .font(.system(size: 100))
                         
@@ -85,38 +85,39 @@ struct ProfileView: View {
                     List(model.tripList.filter {
                         $0.userID.contains(getUserID())
                     }) {
+                        item in
+                        NavigationLink {
+                            Text("Item at \(item.tripName) with id \(item.id)")
+                            // posts
+                            List(model.postList.filter {
+                                $0.tripID.contains(item.id)
+                            }) {
                                 item in
-                                NavigationLink {
-                                    Text("Item at \(item.tripName) with id \(item.id)")
-                                        // posts
-                                        List(model.postList.filter {
-                                            $0.tripID.contains(item.id)
-                                        }) {
-                                            item in
-                                            Text(item.notes)
-//                                            List(imageDictionary.filter{
-//                                                $0.key.contains(item.id)
-//                                            }.map {
-//                                                $0.value
-//                                            }
-//                                                 , id: \.self) { item in
-//
-//                                                Image(uiImage: item)
-//                                                    .resizable()
-//                                                    .frame(width: 200, height: 200)
-//
-//                                            }
-//                                                 .frame(width: 200, height: 300)
-
-                                        }
-                                    
-                                } label: {
-                                    Text("\(item.tripName)")
-                                        .foregroundColor(.black)
+                                Text(item.notes)
+                                List(imageDictionary.filter{
+                                    $0.key.contains(item.id)
+                                }.map {
+                                    $0.value
                                 }
+                                     , id: \.self) { item in
+                                    
+                                    Image(uiImage: item)
+                                        .resizable()
+                                        .frame(width: 200, height: 200)
+                                    
+                                }
+                                     .frame(width: 200, height: 300)
+                                
+                            }
                             
+                        } label: {
+                            Text("\(item.tripName)")
+                                .foregroundColor(.black)
+                        }
+                        
                         
                     }
+                
                         
   
                     
