@@ -14,7 +14,20 @@ struct PicturesInTripsView: View {
                 VStack{
                     ScrollView{
                         VStack{
-                            ForEach(0..<5){_ in
+                            /*List(imageDictionary.filter{
+                             $0.key.contains(item.id)
+                         }.map {
+                             $0.value
+                         }
+                              , id: .self) { item in
+
+                             Image(uiImage: item)
+                                 .resizable()
+                                 .frame(width: 200, height: 200)
+
+                         }
+                              .frame(width: 200, height: 300)*/
+                            ForEach(1..<5){_ in
                                 HStack(spacing: 4){
                                     ForEach(0..<1){_ in
                                         NavigationLink(destination: NotesOnPicture()) {
