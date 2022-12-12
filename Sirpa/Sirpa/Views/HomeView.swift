@@ -51,13 +51,13 @@ struct HomeView: View {
                     
                 }
                 Spacer()
-                LocationButton{
-                    locationManager.requestLocation()
-                }
-                .frame(width: 180, height: 40)
-                .cornerRadius(30)
-                .symbolVariant(.fill)
-                .foregroundColor(.white)
+//                LocationButton{
+//                    locationManager.requestLocation()
+//                }
+//                .frame(width: 180, height: 40)
+//                .cornerRadius(30)
+//                .symbolVariant(.fill)
+//                .foregroundColor(.white)
                 Button("pinn"){
                     let loc = markerLocations.randomElement()
                     locationManager.randomPinn(pinn: loc ?? MapMarkers(id: "none",

@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>768692629453-tnf2tep68irohfl7qs01kmrcbtq059td.apps.googleusercontent.com</string>
+	<string>18640421540-jsds2mnlorrhp1i4ppcduqmbs196ts0a.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.768692629453-tnf2tep68irohfl7qs01kmrcbtq059td</string>
+	<string>com.googleusercontent.apps.18640421540-jsds2mnlorrhp1i4ppcduqmbs196ts0a</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBNX5UcveUMmelNosb9tkYqjhAYw05wcec</string>
+	<string>AIzaSyASYOB1Z3KmcPq98Ym0tSKZ5q8G-ppHHY0</string>
 	<key>GCM_SENDER_ID</key>
-	<string>768692629453</string>
+	<string>18640421540</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>sirpa.org.Sirpa</string>
 	<key>PROJECT_ID</key>
-	<string>sirpa-new</string>
+	<string>sirpa-newagain</string>
 	<key>STORAGE_BUCKET</key>
-	<string>sirpa-new.appspot.com</string>
+	<string>sirpa-newagain.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:768692629453:ios:8066a7ab0720944b129e84</string>
+	<string>1:18640421540:ios:285b2be6f5039b048d5c31</string>
 </dict>
 </plist>
