@@ -6,8 +6,15 @@
 //
 
 import SwiftUI
+import CoreData
+import Firebase
+import FirebaseStorage
 
 struct FirstPage: View {
+    @Environment (\.managedObjectContext) var managedObjectContext
+//    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
+//    FetchedResults<OnlineUser>
+    
     var body: some View {
         VStack{
             Text("Sirpa")
@@ -17,7 +24,7 @@ struct FirstPage: View {
                         fixedSize: 72)
                     .weight(.bold))
                 .foregroundColor(.white)
-            NavigationLink (destination: Login()) {
+            NavigationLink (destination: Login().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)) {
                 Text("Start your journey")
                     .font(
                         .custom(
@@ -49,6 +56,6 @@ struct FirstPage: View {
 
 struct FirstPage_Previews: PreviewProvider {
     static var previews: some View {
-        FirstPage()
+        FirstPage().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

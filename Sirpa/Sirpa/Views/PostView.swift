@@ -93,7 +93,6 @@ struct PostView: View {
                                     chosenTripID = String(model.tripList.map{item in item.tripName + "#" + item.id}[0].split(separator: "#")[1])
                                 }
                                 showNewTrip = false
-                                print("chosen trip id \(chosenTripID)")
                             }
                         }
                     }
@@ -166,7 +165,7 @@ struct PostView: View {
                     HStack{
                         //Upload button
                         if selectedImage != nil {
-                            NavigationLink("Post!", destination: ContentView())
+                            NavigationLink("Post!", destination: BottomTab().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext))
                                 .simultaneousGesture(TapGesture().onEnded{
                                                      uploadPhoto()
                                                  })
@@ -218,7 +217,7 @@ struct PostView: View {
         // Create storage reference
         let storageRef = Storage.storage().reference()
         // turn image into data
-        let imageData = selectedImage!.jpegData(compressionQuality: 0.8)
+        let imageData = selectedImage!.jpegData(compressionQuality: 0.1)
         // Check that we were able to convert it to data
         guard imageData != nil else {
             return

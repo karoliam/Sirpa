@@ -25,6 +25,7 @@ struct ContentView: View {
                 NavigationView{
                     TabView(selection : $selectedTab){
                         HomeView()
+                            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                         .tabItem(){
                             Image(systemName: "globe.americas")
                             Text("Home")
@@ -37,11 +38,13 @@ struct ContentView: View {
                             })))
                         
                         PostView()
+                            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                             .tabItem(){
                                 Image(systemName: "plus")
                             }
                             .tag(2)
                         ProfileView()
+                            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                         .tabItem(){
                             Image(systemName: "person.fill")
                             Text("Home")

@@ -4,18 +4,17 @@
 //
 //  Created by Karoliina Multas on 30.11.2022.
 //
-
 import SwiftUI
-import FirebaseStorage
 import CoreData
+import Firebase
 import FirebaseFirestore
+import FirebaseStorage
 
 struct Login: View {
-    
+
     @ObservedObject var model = ViewModel()
     @Environment (\.managedObjectContext) var managedObjectContext
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
-    FetchedResults<OnlineUser>
+
     
     @State var username = ""
     @State var homeCountry = ""
@@ -24,6 +23,8 @@ struct Login: View {
     @State var retrievedImages = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
     @State var isPickerShowing = false
+    
+
     
     // core data
 //    let coreDM: CoreDataManager
@@ -142,7 +143,7 @@ struct Login: View {
         // Create storage reference
         let storageRef = Storage.storage().reference()
         // turn image into data
-        let imageData = selectedImage!.jpegData(compressionQuality: 0.8)
+        let imageData = selectedImage!.jpegData(compressionQuality: 0.1)
         // Check that we were able to convert it to data
         guard imageData != nil else {
             return
@@ -182,6 +183,7 @@ struct Login: View {
 
 
 struct Login_Previews: PreviewProvider {
+
     static var previews: some View {
         Login()
     }

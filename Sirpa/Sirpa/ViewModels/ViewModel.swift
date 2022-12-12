@@ -23,8 +23,7 @@ class ViewModel: ObservableObject {
     
     func retreiveAllPostPhotos() {
         // get the data from the database
-        let db = Firestore.firestore()
-        db.collection("posts").getDocuments { snapshot, error in
+        db.collection("posts").addSnapshotListener { snapshot, error in
             if error == nil && snapshot != nil {
                 
                 var paths = Dictionary<String, String>()
@@ -122,7 +121,7 @@ class ViewModel: ObservableObject {
     
     func getUserInfo() {
         
-        db.collection("userInfo").getDocuments { snapshot, error in
+        db.collection("userInfo").addSnapshotListener { snapshot, error in
             
             if error == nil {
                 if let snapshot = snapshot {
@@ -144,7 +143,7 @@ class ViewModel: ObservableObject {
     
     func getTripNames() {
         // Read the documents at a specific path
-        db.collection("trip").getDocuments { snapshot, error in
+        db.collection("trip").addSnapshotListener { snapshot, error in
             
             // check for errors
             if error == nil {
@@ -155,11 +154,9 @@ class ViewModel: ObservableObject {
                         // get all the documents and create Todos
                         self.tripList = snapshot.documents.map { d in
                             // Create a todo item for each document returned
-                            print("d tossa \(d)")
                             
                             return Trip(id: d.documentID, tripName: d["tripName"] as? String ?? "", userID: d["userID"] as? String ?? "", timeAdded: d["timeAdded"] as? Timestamp ?? Timestamp())
                         }.sorted(by: {$0.timeAdded.compare($1.timeAdded) == .orderedDescending})
-                        print("selflist tossa \(self.tripList)")
                     }
                 }
             }
@@ -189,7 +186,6 @@ class ViewModel: ObservableObject {
                             // Create a todo item for each document returned
                             return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "",  timeAdded: d["timeAdded"] as? Timestamp ?? Timestamp())
                         }
-                        print("postaukset tossa \(self.postList)")
                     }
                 }
                 
