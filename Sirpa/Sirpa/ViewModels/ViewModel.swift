@@ -6,17 +6,60 @@
 //
 
 import Foundation
+import SwiftUI
 import Firebase
 import FirebaseFirestore
+import FirebaseStorage
 
 class ViewModel: ObservableObject {
     
     @Published var tripList = [Trip]()
     @Published var postList = [Posts]()
     @Published var userList = [User]()
-
+    @Published var retrievedImages = [UIImage]()
+    @Published var imageDictionary = [String:UIImage]()
 
     let db = Firestore.firestore()
+    
+    func retreiveAllPostPhotos() {
+        // get the data from the database
+        let db = Firestore.firestore()
+        db.collection("posts").getDocuments { snapshot, error in
+            if error == nil && snapshot != nil {
+                
+                var paths = Dictionary<String, String>()
+                // loop through all the returned docs
+                for doc in snapshot!.documents {
+                    // extract the file path
+                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
+                    
+                }
+                
+                // loop through each file path and fetch the data from storage
+                for path in paths {
+                    // get a reference to storage
+                    let storageRef = Storage.storage().reference()
+                    // specify the path
+                    let fileRef = storageRef.child(path.value)
+                    // retreive the data
+                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        // check for errors
+                        if error == nil && data != nil {
+                            // create a UIImage and put it in our array for display
+                            if let image = UIImage(data: data!) {
+                                DispatchQueue.main.async {
+                                    self.retrievedImages.append(image)
+                                    self.imageDictionary.updateValue(image, forKey: path.key)
+                                    
+                                }
+                            }
+                        }
+                    }
+                } // end loop throughs
+            }
+        }
+    }
+    
 
     func addTripData(userID: String, tripName: String, timeAdded: Timestamp) {
  

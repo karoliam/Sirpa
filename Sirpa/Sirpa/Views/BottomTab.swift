@@ -4,6 +4,8 @@ import Firebase
 import FirebaseStorage
 
 struct BottomTab: View {
+    @ObservedObject var model = ViewModel()
+
     // tabs
     @State private var selectedTab = 0
         @State private var oldSelectedTab = 0
@@ -57,6 +59,9 @@ struct BottomTab: View {
             }
         }
 
+    init() {
+        model.retreiveAllPostPhotos()
+    }
 
         private func handleSwipe(translation: CGFloat){
             if translation > minDragTranlationForSwipe && selectedTab > 0{

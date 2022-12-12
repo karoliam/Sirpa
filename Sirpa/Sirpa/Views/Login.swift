@@ -52,7 +52,7 @@ struct Login: View {
                         .clipShape(Circle())
                         .frame(width: 200, height: 200)
                         .offset(y: -62)
-                        
+
                 } else {
                     Circle()
                         .fill(.white)
@@ -68,9 +68,9 @@ struct Login: View {
                 .foregroundColor(.white)
                 .offset(y: -62)
                 VStack {
-                    Button("print") {
-                        print("lol")
-                    }
+//                    Button("print") {
+//                        print("lol")
+//                    }
                     TextField("Username", text: $username)
                         .frame(height: 55)
                             .textFieldStyle(PlainTextFieldStyle())
@@ -91,7 +91,7 @@ struct Login: View {
                             .padding([.horizontal], 24)
 
                         //Upload button
-                    if selectedImage != nil && username != "" {
+                    if username != "" {
                         NavigationLink (destination: BottomTab()) {
                                 Text("Login")
                                     .font(
@@ -138,7 +138,7 @@ struct Login: View {
         guard selectedImage != nil else {
             return
         }
-        
+
         // Create storage reference
         let storageRef = Storage.storage().reference()
         // turn image into data
@@ -147,7 +147,7 @@ struct Login: View {
         guard imageData != nil else {
             return
         }
-        
+
         // specify file path and name
         let path = "images/\(UUID().uuidString).jpg"
         let fileRef = storageRef.child(path)
@@ -161,16 +161,16 @@ struct Login: View {
                 model.addUserData(file: path, homeCountry: homeCountry, username: username, timeAdded: Timestamp())
                 if selectedImage != nil {
                     DispatchQueue.main.async {
-                        self.retrievedImages.append(self.selectedImage!)
+                        model.retrievedImages.append(self.selectedImage!)
                     }
                     DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
                         CoreDataManager().saveUserID(userID: model.userList.map{$0.id}[0] as! String, context: managedObjectContext)
                     }
-                   
+
                 }
-                   
+
             }
-        
+
         }
 
     }

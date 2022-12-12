@@ -21,8 +21,7 @@ struct PostView: View {
     @State private var selection = ""
     @State var isPickerShowing = false
     @State var selectedImage: UIImage?
-    @State var retrievedImages = [UIImage]()
-    @State var imageDictionary = [String:UIImage]()
+
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
@@ -177,9 +176,6 @@ struct PostView: View {
                         // image picker
                         ImagePicker(selectedImage: $selectedImage, isPickerShowing: $isPickerShowing)
                     }
-                    .onAppear {
-                        retreiveAllPostPhotos()
-                    }
                 }
                     
             } .navigationBarBackButtonHidden(true)
@@ -193,6 +189,7 @@ struct PostView: View {
     init() {
     model.getTripNames()
     model.getPosts()
+    model.retreiveAllPostPhotos()
     }
     
     
@@ -243,7 +240,7 @@ struct PostView: View {
               
                 if selectedImage != nil {
                     DispatchQueue.main.async {
-                        self.retrievedImages.append(self.selectedImage!)
+                        model.retrievedImages.append(self.selectedImage!)
                     }
                 }
                 
@@ -278,8 +275,8 @@ struct PostView: View {
                             // create a UIImage and put it in our array for display
                             if let image = UIImage(data: data!) {
                                 DispatchQueue.main.async {
-                                    retrievedImages.append(image)
-                                    imageDictionary.updateValue(image, forKey: path.key)
+                                    model.retrievedImages.append(image)
+                                    model.imageDictionary.updateValue(image, forKey: path.key)
                                     
                                 }
                             }

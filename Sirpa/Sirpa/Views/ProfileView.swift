@@ -33,6 +33,7 @@ struct ProfileView: View {
     @State var mapMarkerNew = MapMarkers(id: "", latitude: 0.0, longitude: 0.0, file: "", notes: "", timeStamp: Timestamp(), tripID: "", userID: "")
     @State var userID = ""
     @State var localUserID = ""
+    @State var notesShown = false
 
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -48,14 +49,6 @@ struct ProfileView: View {
                 VStack{
                     HStack{
                         VStack{
-                            Button("photo") {
-                                print("kuvalista \(profileImageDictionary.filter{$0.key.contains(getUserID())}.map{$0.value})")
-                            }
-//                            Image(uiImage: profileImageDictionary.filter{$0.key.contains(getUserID())}.map{$0.value}.first
-//                            }.map {
-//                                $0.value
-//                            }.first!)
-//                                .frame(width: 100, height: 100)
                             Text("\(model.userList.filter{$0.id == getUserID() }.map{$0.username}.first as? String ?? "no username found")")
                                 .foregroundColor(.white)
                         }
@@ -93,20 +86,90 @@ struct ProfileView: View {
                                 $0.tripID.contains(item.id)
                             }) {
                                 item in
-                                Text(item.notes)
-                                List(imageDictionary.filter{
-                                    $0.key.contains(item.id)
-                                }.map {
-                                    $0.value
-                                }
-                                     , id: \.self) { item in
-                                    
-                                    Image(uiImage: item)
-                                        .resizable()
-                                        .frame(width: 200, height: 200)
-                                    
-                                }
-                                     .frame(width: 200, height: 300)
+                                ZStack{
+//                                    ScrollView{
+                                                HStack(spacing: 4){
+                                                    
+                                                        if(notesShown == true) {
+                                                            List(model.imageDictionary.filter{
+                                                                $0.key.contains(item.id)
+                                                            }.map {
+                                                                $0.value
+                                                            }
+                                                                 , id: \.self) { item in
+                                                                
+                                                                Image(uiImage: item)
+                                                                    .resizable()
+                                                                    .frame(width: 390, height: 600)
+                                                                    .opacity(0.5)
+                                                                
+                                                            }
+                                                                 .frame(width: 390, height: 600)
+                                                                 .foregroundColor(.white)
+                                                                 .overlay(alignment: .center) {
+                                                                    VStack{
+                                                                        HStack{
+                                                                            VStack{
+                                                                                //PROFILEPIC JA DATE ADDED
+                                                                                Text("\(Date(), style: .date)")
+                                                                            }
+                                                                            VStack{
+                                                                                //IF SHARED
+                                                                                Text("Shared")
+                                                                            }
+                                                                            .padding()
+                                                                            VStack{
+                                                                                //TIMEADDED
+                                                                                Text("\(Date(), style: .time)")
+                                                                            }
+                                                                        }
+                                                                        Spacer()
+                                                                        HStack {
+                                                                            Image(systemName:"person.fill")
+                                                                                .font(.system(size: 50))
+                                                                            Circle()
+                                                                                .fill(Color.red)
+                                                                                .frame(width: 150, height: 150)
+                                                                                .padding(30)
+                                                                        }
+                                                                        Spacer()
+                                                                        HStack {
+                                                                            //NOTES
+                                                                            Text("\(item.notes)")
+                                                                        } .frame(width: 350)
+                                                                        Spacer()
+                                                                    }
+                                                                }
+                                                                .onTapGesture(count: 1) {
+                                                                    notesShown.toggle()
+                                                                }
+                                                        } else {
+                                                            List(model.imageDictionary.filter{
+                                                                $0.key.contains(item.id)
+                                                            }.map {
+                                                                $0.value
+                                                            }
+                                                                 , id: \.self) { item in
+                                                                
+                                                                Image(uiImage: item)
+                                                                    .resizable()
+                                                                    .frame(width: 390, height: 600)
+                                                                
+                                                            }
+                                                                 .frame(width: 390, height: 600)
+                                                                    .onTapGesture(count: 1) {
+                                                                        notesShown.toggle()
+                                                                    }
+                                                                
+                                                            }
+                                                        
+                                                    
+                                            
+
+                                    }
+                                }.navigationBarTitle("Trip place", displayMode: .inline)
+                                
+                                
                                 
                             }
                             
@@ -118,213 +181,98 @@ struct ProfileView: View {
                         
                     }
                 
-                        
   
-                    
-                    
-//                    ScrollView{
-//                        VStack{
-//                            ForEach(0..<5){_ in
-//                                HStack(spacing: 4){
-//                                    ForEach(0..<2){_ in
-//                                        NavigationLink(destination: DetailImageView(data: "TripID")){
-//                                            ForEach(retrievedImages, id: \.self) { item in
-//                                                Image(uiImage: item)
-//                                                    .resizable()
-//                                                    .frame(width: 200, height: 200)
-//                                            }
-//
-//                                        }
-//
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                        Spacer()
-//                    }
+        
                 }
             }.background(Color(white: 0.1))
                 .foregroundColor(.white)
-                .onAppear {
-                    retreiveAllPostPhotos()
-                    retreiveAllProfilePhotos()
-                }
                 .navigationBarBackButtonHidden(true)
             
         }
     }
     
+    private var notesOnPicture: some View {
+        VStack{
+            HStack{
+                VStack{
+                    //PROFILEPIC JA DATE ADDED
+                    Text("\(Date(), style: .date)")
+                }
+                VStack{
+                    //IF SHARED
+                    Text("Shared")
+                }
+                .padding()
+                VStack{
+                    //TIMEADDED
+                    Text("\(Date(), style: .time)")
+                }
+            }
+            Spacer()
+            HStack {
+                Image(systemName:"person.fill")
+                    .font(.system(size: 50))
+                Circle()
+                    .fill(Color.red)
+                    .frame(width: 150, height: 150)
+                    .padding(30)
+            }
+            Spacer()
+            HStack {
+                //NOTES
+                Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.")
+            } .frame(width: 350)
+            Spacer()
+        }
+    }
 
     
-    func uploadPhoto () {
-        //make sure selected image property isnt nil
-        guard selectedImage != nil else {
-            return
-        }
+
+
         
-        // Create storage reference
-        let storageRef = Storage.storage().reference()
-        // turn image into data
-        let imageData = selectedImage!.jpegData(compressionQuality: 0.8)
-        // Check that we were able to convert it to data
-        guard imageData != nil else {
-            return
-        }
-        
-        // specify file path and name
-        let path = "images/\(UUID().uuidString).jpg"
-        let fileRef = storageRef.child(path)
-        // upload that data
-        let uploadTask = fileRef.putData(imageData!, metadata: nil) {
-            metadata, error in
-            // check for errors
-            if error == nil && metadata != nil {
-                
-                // Save the data in the database in post collection
-                model.addPostData(file: path, latitude: 0.0, longitude: 0.0, notes: notes, tripID: "test", timeAdded: Timestamp())
-                if selectedImage != nil {
-                    DispatchQueue.main.async {
-                        self.retrievedImages.append(self.selectedImage!)
-                    }
-                }
-                
-            }
-        }
-    }
-    func filteredImagesById(postIDforImage: String) -> Array<UIImage> {
-        filteredImageDictionary = imageDictionary.filter{
-            $0.key == postIDforImage
-        }
-        print("image dictionary funkkarissa \(imageDictionary)")
-        print("filtered dictionary \(filteredImageDictionary)")
-        for item in filteredImageDictionary {
-            imageList.append(item.value)
-        }
-        print("imagelist \(imageList)")
-        return imageList
-    }
-    
-//    func retrieveProfilePhoto() {
-//        // get the data from the database
-//        let db = Firestore.firestore()
-//        let docRef = db.collection("user").document("CwCPvoeexar6nh0YKdWq")
+//        func retreiveAllPostPhotos() {
+//            // get the data from the database
+//            let db = Firestore.firestore()
+//            db.collection("posts").getDocuments { snapshot, error in
+//                if error == nil && snapshot != nil {
 //
-//        docRef.getDocument { (document, error) in
-//            guard error == nil else {
-//                print("error", error ?? "")
-//                return
-//            }
+//                    var paths = Dictionary<String, String>()
+//                    // loop through all the returned docs
+//                    for doc in snapshot!.documents {
+//                        // extract the file path
+//                        paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
 //
-//            if let document = document, document.exists {
-//                let data = document.data()
-//                if let data = data {
-//                    print("data", data)
-//                    let file = data["file"] as? String ?? ""
-//                    // get a reference to storage
-//                    let storageRef = Storage.storage().reference()
-//                    // specify the path
-//                    let fileRef = storageRef.child(file)
+//                    }
 //
-//                    // retreive the data
-//                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-//                        // check for errors
-//                        if error == nil && data != nil {
-//                            // create a UIImage and put it in our array for display
-//                            if let image = UIImage(data: data!) {
-//                                DispatchQueue.main.async {
-//                                    profilePhoto.append(image)
+//                    // loop through each file path and fetch the data from storage
+//                    for path in paths {
+//                        // get a reference to storage
+//                        let storageRef = Storage.storage().reference()
+//                        // specify the path
+//                        let fileRef = storageRef.child(path.value)
+//                        // retreive the data
+//                        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+//                            // check for errors
+//                            if error == nil && data != nil {
+//                                // create a UIImage and put it in our array for display
+//                                if let image = UIImage(data: data!) {
+//                                    DispatchQueue.main.async {
+//                                        retrievedImages.append(image)
+//                                        imageDictionary.updateValue(image, forKey: path.key)
+//
+//                                    }
 //                                }
 //                            }
 //                        }
-//                    }
+//                    } // end loop throughs
 //                }
 //            }
 //        }
-//    }
-    
-    func retreiveAllProfilePhotos() {
-        // get the data from the database
-        let db = Firestore.firestore()
-        db.collection("user").getDocuments { snapshot, error in
-            if error == nil && snapshot != nil {
-                
-                var paths = Dictionary<String, String>()
-                // loop through all the returned docs
-                for doc in snapshot!.documents {
-                    // extract the file path
-                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
-                    
-                }
-                
-                // loop through each file path and fetch the data from storage
-                for path in paths {
-                    // get a reference to storage
-                    let storageRef = Storage.storage().reference()
-                    // specify the path
-                    let fileRef = storageRef.child(path.value)
-                    // retreive the data
-                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                        // check for errors
-                        if error == nil && data != nil {
-                            // create a UIImage and put it in our array for display
-                            if let image = UIImage(data: data!) {
-                                DispatchQueue.main.async {
-                                    profileImageDictionary.updateValue(image, forKey: path.key)
-                                    
-                                }
-                            }
-                        }
-                    }
-                } // end loop throughs
-            }
-        }
-    }
-    
-        
-        func retreiveAllPostPhotos() {
-            // get the data from the database
-            let db = Firestore.firestore()
-            db.collection("posts").getDocuments { snapshot, error in
-                if error == nil && snapshot != nil {
-                    
-                    var paths = Dictionary<String, String>()
-                    var profilePhotoPath = []
-                    // loop through all the returned docs
-                    for doc in snapshot!.documents {
-                        // extract the file path
-                        paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
-                        
-                    }
-                    
-                    // loop through each file path and fetch the data from storage
-                    for path in paths {
-                        // get a reference to storage
-                        let storageRef = Storage.storage().reference()
-                        // specify the path
-                        let fileRef = storageRef.child(path.value)
-                        // retreive the data
-                        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                            // check for errors
-                            if error == nil && data != nil {
-                                // create a UIImage and put it in our array for display
-                                if let image = UIImage(data: data!) {
-                                    DispatchQueue.main.async {
-                                        retrievedImages.append(image)
-                                        imageDictionary.updateValue(image, forKey: path.key)
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    } // end loop throughs
-                }
-            }
-        }
         init() {
             model.getTripNames()
             model.getPosts()
             model.getUserInfo()
+            model.retreiveAllPostPhotos()
         }
         func getUserID() -> String {
             DispatchQueue.main.async {
