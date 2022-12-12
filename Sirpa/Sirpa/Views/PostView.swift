@@ -30,6 +30,13 @@ struct PostView: View {
     @State var localUserID = ""
 
 //    @State private var is
+    // Voice Recognition
+    @StateObject var speechRecognizer = SpeechRecognizer()
+    @State private var isRecording = false
+    @State private var buttonText = "press to record"
+    @State private var voiceMicImage = "mic"
+    @State private var voiceMicColor:Color = .blue
+
     
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -130,8 +137,31 @@ struct PostView: View {
                                 .foregroundColor(Color(white: 0.8))
                             
                         }
-                    
-                            
+                        Button(action: {
+                            isRecording = !isRecording
+                            print($isRecording)
+                            if (isRecording == true) {
+                                buttonText = "press to stop recording"
+                                speechRecognizer.reset()
+                                speechRecognizer.transcribe()
+                                self.voiceMicColor = .red
+                                self.voiceMicImage = "mic.slash"
+                            } else {
+                                buttonText = "press to record"
+                                speechRecognizer.stopTranscribing()
+                                notes = notes + " " + speechRecognizer.transcript
+                                self.voiceMicColor = .blue
+                                self.voiceMicImage = "mic"
+                            }
+                        })
+                        {
+                            Image(systemName: voiceMicImage)
+                                .foregroundColor(voiceMicColor)
+                                .font(.system(size:32))
+                        }
+                        .padding(24)
+                        .offset(y: 70)
+
                     }
            
                     HStack{
