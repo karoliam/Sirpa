@@ -33,7 +33,6 @@ struct PostView: View {
     @State private var isRecording = false
     @State private var buttonText = "press to record"
     @State private var voiceMicImage = "mic"
-
     @State private var voiceMicColor:Color = .blue
 
     
