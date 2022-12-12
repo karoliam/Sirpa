@@ -168,6 +168,7 @@ struct ProfileView: View {
 
                                     }
                                 }.navigationBarTitle("Trip place", displayMode: .inline)
+                                    .navigationBarBackButtonHidden(true)
                                 
                                 
                                 
@@ -186,7 +187,6 @@ struct ProfileView: View {
                 }
             }.background(Color(white: 0.1))
                 .foregroundColor(.white)
-                .navigationBarBackButtonHidden(true)
             
         }
     }

@@ -53,7 +53,8 @@ struct BottomTab: View {
                     }
                 }
 
-            }
+            }.navigationBarBackButtonHidden(true)
+
         }
 
     init() {
