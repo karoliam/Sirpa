@@ -15,9 +15,6 @@ struct NotesOnPicture: View {
                 VStack{
                     //PROFILEPIC JA DATE ADDED
                     Text("\(Date(), style: .date)")
-                    Image(systemName:"person.fill")
-                        .font(.system(size: 50))
-                        .cornerRadius(500)
                 }
                 VStack{
                     //IF SHARED
@@ -31,12 +28,8 @@ struct NotesOnPicture: View {
             }
             Spacer()
             HStack {
-                //KARTTA
-                Text("Map")
-                    .frame(width: 200, height: 200)
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(100)
+                Image(systemName:"person.fill")
+                    .font(.system(size: 100))
             }
             Spacer()
             HStack {
