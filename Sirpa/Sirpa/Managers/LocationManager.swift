@@ -33,7 +33,7 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
 
     }
     
-    func randomPinn(pinn:Location){
+    func randomPinn(pinn:MapMarkers){
         DispatchQueue.main.async {
             self.location = pinn.coordinate
             self.region = MKCoordinateRegion(

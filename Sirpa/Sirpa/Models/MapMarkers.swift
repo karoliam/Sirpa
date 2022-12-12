@@ -6,12 +6,13 @@
 //
 
 import Foundation
-import FirebaseFirestore
+import CoreLocation
 
+import FirebaseFirestore
+import Firebase
 struct MapMarkers: Identifiable {
     let id: String
-    let latitude: Double
-    let longitude: Double
+    let coordinate: CLLocationCoordinate2D
     let file: String
     let notes: String
     let timeStamp: Timestamp

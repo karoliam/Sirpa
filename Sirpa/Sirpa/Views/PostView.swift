@@ -165,7 +165,7 @@ struct PostView: View {
                     HStack{
                         //Upload button
                         if selectedImage != nil {
-                            NavigationLink("Post!", destination: BottomTab().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext))
+                            NavigationLink("Post!", destination: ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext))
                                 .simultaneousGesture(TapGesture().onEnded{
                                                      uploadPhoto()
                                                  })

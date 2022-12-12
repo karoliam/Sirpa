@@ -1,80 +1,135 @@
-//
-//  ContentView.swift
-//  Sirpa
-//
-//  Created by Karoliina Multas on 6.12.2022.
-//
-
 import SwiftUI
 import CoreData
 import Firebase
 import FirebaseStorage
-
+import CoreLocation
 struct ContentView: View {
-    // tabs
-    @State private var selectedTab = 0
-        @State private var oldSelectedTab = 0
-        @State private var isPostingVisible = false
-        let tabsTotal = 2
-        let minDragTranlationForSwipe: CGFloat = 50
     
-
+    @ObservedObject var model = ViewModel()
     
-    var body:some View{
-            VStack{
-                NavigationView{
-                    TabView(selection : $selectedTab){
-                        HomeView()
-                            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                        .tabItem(){
-                            Image(systemName: "globe.americas")
-                            Text("Home")
-                        }
-                        .toolbar(.visible, for: .tabBar)
-                        .toolbarBackground(Color.black, for: .tabBar)
-                        .tag(0)
-                            .highPriorityGesture(DragGesture().onEnded(({
-                                self.handleSwipe(translation: $0.translation.width)
-                            })))
-                        
-                        PostView()
-                            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                            .tabItem(){
-                                Image(systemName: "plus")
-                            }
-                            .tag(2)
-                        ProfileView()
-                            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                        .tabItem(){
-                            Image(systemName: "person.fill")
-                            Text("Home")
-                        }
-                        .toolbar(.visible, for: .tabBar)
-                        .toolbarBackground(Color.black, for: .tabBar)
-                        .tag(1)
-                            .highPriorityGesture(DragGesture().onEnded(({
-                                self.handleSwipe(translation: $0.translation.width)
-                            })))
-                        
-                        
-                    }
-                }
-                .navigationBarBackButtonHidden(true)
+    @State var tripName = ""
+    @State var notes = ""
+    @State var id = ""
+    @State var timeAdded = ""
+    @State var isPickerShowing = false
+    @State var selectedImage: UIImage?
+    @State var retrievedImages = [UIImage]()
+    @State var tripID = ""
+    @State var imageDictionary = [String:UIImage]()
+    @State var imageList = [UIImage]()
+    @State var filteredImageDictionary = [String:UIImage]()
+    @State private var presentAlert = false
+    @State var mapMarkers = [MapMarkers]()
+    @State var mapMarkerNew = MapMarkers(id: "", coordinate: CLLocationCoordinate2D(), file: "", notes: "", timeStamp: Timestamp(), tripID: "", userID: "")
+    @State var userID = ""
+    
+    //timestamp
+    func timeStamp() -> String {
+        let now = Date()
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let dateString = formatter.string(from: now)
+        return dateString
+    }
 
+
+
+    var body: some View {
+        ZStack{
+  
                 
+            BottomTab(markers: $mapMarkers)
+            Button("load markers"){
+                addingDataToMapMarkers()
             }
+                
+        
         }
+}
+            
+    
+    func addingDataToMapMarkers() {
+        
+        for item in model.tripList {
+            userID = item.userID
+        }
+        for item in model.postList {
+            
+            mapMarkerNew = MapMarkers(id: item.id, coordinate: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude), file: item.file, notes: item.notes, timeStamp: Timestamp(), tripID: item.tripID, userID: userID)
+            
+            print(mapMarkerNew)
+                mapMarkers.append(mapMarkerNew)
+        }
+        print("markkers being added")
+        print( mapMarkers)
+    }
+    
+    
 
     
-        private func handleSwipe(translation: CGFloat){
-            if translation > minDragTranlationForSwipe && selectedTab > 0{
-                selectedTab -= 1
-            } else if translation < -minDragTranlationForSwipe && selectedTab < tabsTotal-1{
-                selectedTab+=1
+    func retreiveAllPostPhotos() {
+        // get the data from the database
+        let db = Firestore.firestore()
+        db.collection("posts").getDocuments { snapshot, error in
+            if error == nil && snapshot != nil {
+                
+                var paths = Dictionary<String, String>()
+                // loop through all the returned docs
+                for doc in snapshot!.documents {
+                    // extract the file path
+                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
+                }
+                
+                // loop through each file path and fetch the data from storage
+                for path in paths {
+                    // get a reference to storage
+                    let storageRef = Storage.storage().reference()
+                    // specify the path
+                    let fileRef = storageRef.child(path.value)
+                    
+                    // retreive the data
+                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                        // check for errors
+                        if error == nil && data != nil {
+                            // create a UIImage and put it in our array for display
+                            if let image = UIImage(data: data!) {
+                                DispatchQueue.main.async {
+                                    retrievedImages.append(image)
+                                    imageDictionary.updateValue(image, forKey: path.key)
+                                    
+                                }
+                            }
+                        }
+                    }
+                } // end loop throughs
             }
         }
     }
+    
+    func filteredImagesById(postIDforImage: String) -> Array<UIImage> {
+        filteredImageDictionary = imageDictionary.filter{
+            $0.key == postIDforImage
+        }
+        print("image dictionary funkkarissa \(imageDictionary)")
+        print("filtered dictionary \(filteredImageDictionary)")
+        for item in filteredImageDictionary {
+            imageList.append(item.value)
+        }
+        print("imagelist \(imageList)")
+        return imageList
+    }
+    
+    init() {
+        
+        model.getTripNames()
+        model.getPosts()
+        
+    }
+    
+    
 
+}
 
 
 

@@ -93,7 +93,7 @@ struct Login: View {
 
                         //Upload button
                     if username != "" {
-                        NavigationLink (destination: BottomTab()) {
+                        NavigationLink (destination: ContentView()) {
                                 Text("Login")
                                     .font(
                                         .custom(

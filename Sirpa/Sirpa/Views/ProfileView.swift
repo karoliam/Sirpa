@@ -30,7 +30,7 @@ struct ProfileView: View {
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
     @State var mapMarkers = [MapMarkers]()
-    @State var mapMarkerNew = MapMarkers(id: "", latitude: 0.0, longitude: 0.0, file: "", notes: "", timeStamp: Timestamp(), tripID: "", userID: "")
+
     @State var userID = ""
     @State var localUserID = ""
     @State var notesShown = false
