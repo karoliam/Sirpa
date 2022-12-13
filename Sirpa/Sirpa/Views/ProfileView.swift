@@ -4,6 +4,8 @@
 //
 //  Created by iosdev on 11.11.2022.
 //
+import MapKit
+import CoreLocationUI
 
 import SwiftUI
 import Firebase
@@ -111,12 +113,9 @@ struct ProfileView: View {
                                                                         }
                                                                         Spacer()
                                                                         HStack {
-                                                                            Image(systemName:"person.fill")
-                                                                                .font(.system(size: 50))
-                                                                            Circle()
-                                                                                .fill(Color.red)
-                                                                                .frame(width: 150, height: 150)
-                                                                                .padding(30)
+                                                                                Image(systemName:"person.fill")
+                                                                                    .font(.system(size: 50))
+
                                                                         }
                                                                         Spacer()
                                                                         HStack {

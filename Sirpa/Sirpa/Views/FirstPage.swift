@@ -17,6 +17,7 @@ struct FirstPage: View {
 //    FetchedResults<OnlineUser>
     
     var body: some View {
+        
         VStack{
             Text("Sirpa")
                 .font(
