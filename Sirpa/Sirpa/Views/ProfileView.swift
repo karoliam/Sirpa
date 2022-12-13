@@ -116,6 +116,9 @@ struct ProfileView: View {
                                                                         HStack {
                                                                                 Image(systemName:"person.fill")
                                                                                     .font(.system(size: 50))
+                                                                            Circle()
+                                                                                .size(width: 150, height: 150)
+                                                                                .fill(Color.red)
 
                                                                         }
                                                                         Spacer()
