@@ -6,7 +6,6 @@
 //
 import MapKit
 import CoreLocationUI
-
 import SwiftUI
 import Firebase
 import FirebaseFirestore
@@ -29,7 +28,6 @@ struct ProfileView: View {
     @State var tripID = ""
 //    @State var profilePhoto = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
-    @State var profileImageDictionary = [String:UIImage]()
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
@@ -57,16 +55,16 @@ struct ProfileView: View {
                                 .fontWeight(.bold)
                                 .frame(alignment: .center)
                                 .padding(20)
+                              
                         HStack{
-                            
-                            ForEach(model.profileImages, id: \.self) { item in
+                            ForEach(model.profilePhotoDictionary.filter{$0.key == getUserID()}.map{$0.value}, id: \.self) { item in
                                 Image(uiImage: item)
-                                    .frame(width: 200, height: 200)
-                                    .onAppear {
-                                        model.getProfilePhotos()
-                                        model.getUserInfo()
-                                    }
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
                             }
+                            .frame(width: 100, height: 100)
+                            .cornerRadius(100)
+                          
 
                             
                                 VStack{
@@ -83,7 +81,7 @@ struct ProfileView: View {
                                 
                         }
 
-                    
+                    Spacer()
               
                     List(model.tripList.filter {
                         $0.userID.contains(getUserID())
@@ -116,34 +114,47 @@ struct ProfileView: View {
                                                                  .frame(width: 390, height: 600)
                                                                  .foregroundColor(.white)
                                                                  .overlay(alignment: .center) {
-                                                                    VStack{
-                                                                        HStack{
-                                                                            VStack{
-                                                                                //TIMEADDED
-                                                                                Text("\(timeformatter.formatDate(date: item.timeAdded))")
-                                                                            }
-                                                                        }
-                                                                        Spacer()
-                                                                        HStack {
-                                                                                Image(systemName:"person.fill")
-                                                                                    .font(.system(size: 50))
-                                                                            Circle()
-                                                                                .size(width: 150, height: 150)
-                                                                                .fill(Color.red)
-
-                                                                        }
-                                                                        Spacer()
-                                                                        HStack {
-                                                                            //NOTES
-                                                                            Text("\(item.notes)")
-                                                                        } .frame(width: 350)
-                                                                        Spacer()
-                                                                    }
-                                                                }
-                                                                .onTapGesture(count: 1) {
-                                                                    notesShown.toggle()
-                                                                }
-                                                        } else {
+                                                                     
+                                                                     VStack{
+                                                                         HStack{
+                                                                             VStack{
+                                                                                 
+                                                                                 //PROFILEPIC JA DATE ADDED
+                                                                                 Text("\(timeformatter.formatDate(date: item.timeAdded))")
+                                                                                     .padding()
+                                                                             }
+                                                                         }
+                                                                         Spacer()
+                                                                         // PROFILE PIC
+                                                                         ForEach(model.profilePhotoDictionary.filter{$0.key == getUserID()}.map{$0.value}, id: \.self) { item in
+                                                                             Image(uiImage: item)
+                                                                                 .resizable()
+                                                                                 .frame(width: 100, height: 100)
+                                                                         }
+                                                                         .frame(width: 80, height: 80)
+                                                                         .cornerRadius(100)
+                                                                         .padding(.trailing, 125)
+                                                                         HStack {
+                                                                 
+                                                                             Circle()
+                                                                                 .fill(Color.red)
+                                                                                 .frame(width: 150, height: 150)
+                                                                                 .padding(30)
+                                                                         }
+                                                                         Spacer()
+                                                                         HStack {
+                                                                             //NOTES
+                                                                             Text("\(item.notes)")
+                                                                         } .frame(width: 350)
+                                                                         Spacer()
+                                                                     }
+                                                                 }
+                                                                 .onTapGesture(count: 1) {
+                                                                     notesShown.toggle()
+                                                                 }
+                                                     }
+                                                                     
+                                                            else {
                                                             ForEach(model.imageDictionary.filter{
                                                                 $0.key.contains(item.id)
                                                             }.map {
@@ -177,6 +188,7 @@ struct ProfileView: View {
                             Text("\(item.tripName)")
                                 .foregroundColor(.black)
                         }
+                    
                         
                         
                     }
@@ -196,6 +208,7 @@ struct ProfileView: View {
             model.getPosts()
             model.getUserInfo()
             model.retreiveAllPostPhotos()
+            model.getProfilePhotos()
         }
         func getUserID() -> String {
             DispatchQueue.main.async {
