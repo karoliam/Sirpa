@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 import Firebase
 import FirebaseStorage
+import FirebaseFirestore
 
 struct FirstPage: View {
     @Environment (\.managedObjectContext) var managedObjectContext

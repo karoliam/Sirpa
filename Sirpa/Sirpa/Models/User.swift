@@ -9,7 +9,6 @@ import Foundation
 import FirebaseFirestore
 
 struct User: Identifiable {
-    
     var id: String
     var file: String
     var homeCountry: String

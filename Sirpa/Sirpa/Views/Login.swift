@@ -18,7 +18,6 @@ struct Login: View {
     
     @State var username = ""
     @State var homeCountry = ""
-    @State var userID: User?
     @State var selectedImage: UIImage?
     @State var retrievedImages = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
@@ -93,7 +92,7 @@ struct Login: View {
 
                         //Upload button
                     if username != "" {
-                        NavigationLink (destination: ContentView()) {
+                        NavigationLink (destination: ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)) {
                                 Text("Login")
                                     .font(
                                         .custom(
@@ -108,7 +107,7 @@ struct Login: View {
                             }.padding(20)
                                 .simultaneousGesture(TapGesture().onEnded{
                                     uploadPhoto()
-                                 
+                                    
                                 })
 
                         }
@@ -163,9 +162,11 @@ struct Login: View {
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         model.retrievedImages.append(self.selectedImage!)
+                        // TODO: lisää tänne imageDictionary
                     }
                     DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
-                        CoreDataManager().saveUserID(userID: model.userList.map{$0.id}[0] as! String, context: managedObjectContext)
+                        CoreDataManager().saveUserID(userID: model.userList.map{$0.id}[0], context: managedObjectContext)
+
                     }
 
                 }
@@ -185,6 +186,6 @@ struct Login: View {
 struct Login_Previews: PreviewProvider {
 
     static var previews: some View {
-        Login()
+        Login().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

@@ -3,9 +3,14 @@ import CoreData
 import Firebase
 import FirebaseStorage
 import CoreLocation
+import FirebaseFirestore
+
 struct ContentView: View {
     
     @ObservedObject var model = ViewModel()
+//        @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
+//        FetchedResults<OnlineUser>
+    
     
     @State var tripName = ""
     @State var notes = ""

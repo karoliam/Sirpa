@@ -40,7 +40,7 @@ class ViewModel: ObservableObject {
                     // specify the path
                     let fileRef = storageRef.child(path.value)
                     // retreive the data
-                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                    fileRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
                         // check for errors
                         if error == nil && data != nil {
                             // create a UIImage and put it in our array for display

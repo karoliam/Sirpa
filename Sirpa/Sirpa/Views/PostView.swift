@@ -8,6 +8,8 @@
 import SwiftUI
 import Firebase
 import FirebaseStorage
+import FirebaseFirestore
+import CoreData
 
 struct PostView: View {
     @State private var username: String = ""
@@ -35,11 +37,12 @@ struct PostView: View {
     @State private var buttonText = "press to record"
     @State private var voiceMicImage = "mic"
     @State private var voiceMicColor:Color = .blue
+    @State var imageDictionary = [String:UIImage]()
 
     
     @Environment(\.managedObjectContext) private var viewContext
     
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID)]) var cdUserID:
     FetchedResults<OnlineUser>
     
     var body: some View {
@@ -64,7 +67,7 @@ struct PostView: View {
                             }
                             
                             
-                            ForEach(model.tripList.map{item in item.tripName + "#" + item.id}, id: \.self) { item in
+                            ForEach(model.tripList.filter{$0.id.contains(getUserID())}.map{item in item.tripName + "#" + item.id}, id: \.self) { item in
                                 Button(action: {
                                     choiceMade = String(item.split(separator: "#")[0])
                                     chosenTripID = String(item.split(separator: "#")[1])
@@ -86,11 +89,11 @@ struct PostView: View {
                             TextField("Trip name", text: $tripName)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                             Button("Add") {
-                                model.addTripData(userID: getUserID(), tripName: tripName, timeAdded: Timestamp())
+                                    model.addTripData(userID: getUserID(), tripName: tripName, timeAdded: Timestamp())
                                 choiceMade = tripName
                                 tripName = ""
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                    chosenTripID = String(model.tripList.map{item in item.tripName + "#" + item.id}[0].split(separator: "#")[1])
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    chosenTripID = String(model.tripList.map{$0.id}[0])
                                 }
                                 showNewTrip = false
                             }
@@ -177,7 +180,7 @@ struct PostView: View {
                     }
                 }
                     
-            } .navigationBarBackButtonHidden(true)
+            }
 
         }
 
@@ -240,52 +243,14 @@ struct PostView: View {
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         model.retrievedImages.append(self.selectedImage!)
+                        imageDictionary.updateValue(self.selectedImage!, forKey: model.postList.map{$0.id}[0])
                     }
                 }
                 
             }
         }
     }
-    
-    func retreiveAllPostPhotos() {
-        // get the data from the database
-        let db = Firestore.firestore()
-        db.collection("posts").getDocuments { snapshot, error in
-            if error == nil && snapshot != nil {
-                
-                var paths = Dictionary<String, String>()
-                // loop through all the returned docs
-                for doc in snapshot!.documents {
-                    // extract the file path
-                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
-                }
-                
-                // loop through each file path and fetch the data from storage
-                for path in paths {
-                    // get a reference to storage
-                    let storageRef = Storage.storage().reference()
-                    // specify the path
-                    let fileRef = storageRef.child(path.value)
-                    
-                    // retreive the data
-                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                        // check for errors
-                        if error == nil && data != nil {
-                            // create a UIImage and put it in our array for display
-                            if let image = UIImage(data: data!) {
-                                DispatchQueue.main.async {
-                                    model.retrievedImages.append(image)
-                                    model.imageDictionary.updateValue(image, forKey: path.key)
-                                    
-                                }
-                            }
-                        }
-                    }
-                } // end loop throughs
-            }
-        }
-    }
-    
+
     
     
     }
