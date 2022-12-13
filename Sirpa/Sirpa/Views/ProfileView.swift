@@ -218,9 +218,11 @@ struct ProfileView: View {
             }
             return localUserID
         }
+    
+    
     }
     
-    
+
     struct ProfileView_Previews: PreviewProvider {
         static var previews: some View {
             ProfileView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)

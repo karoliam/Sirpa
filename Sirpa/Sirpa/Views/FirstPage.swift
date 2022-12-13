@@ -12,9 +12,14 @@ import FirebaseStorage
 import FirebaseFirestore
 
 struct FirstPage: View {
-    @Environment (\.managedObjectContext) var managedObjectContext
 //    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID, order: .reverse)]) var cdUserID:
 //    FetchedResults<OnlineUser>
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID)]) var cdUserID:
+    FetchedResults<OnlineUser>
+    @State var localUserID = ""
+
     
     var body: some View {
         
@@ -43,6 +48,9 @@ struct FirstPage: View {
                     .offset(x: -12)
                 
             }
+            .onAppear{
+                getUserID()
+            }
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(.white))
@@ -52,6 +60,11 @@ struct FirstPage: View {
             }.background(
                 Image("palm-tree")
             )
+    }
+    func getUserID() {
+        for item in cdUserID {
+            localUserID = item.userID!
+        }
     }
 }
     
