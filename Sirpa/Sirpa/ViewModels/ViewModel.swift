@@ -31,7 +31,6 @@ class ViewModel: ObservableObject {
                 for doc in snapshot!.documents {
                     // extract the file path
                     paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
-                    
                 }
                 
                 // loop through each file path and fetch the data from storage
