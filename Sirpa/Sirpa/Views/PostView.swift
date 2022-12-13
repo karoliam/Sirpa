@@ -10,6 +10,8 @@ import Firebase
 import FirebaseStorage
 import FirebaseFirestore
 import CoreData
+import MapKit
+import CoreLocationUI
 
 
 struct PostView: View {
@@ -24,14 +26,15 @@ struct PostView: View {
     @State private var selection = ""
     @State var isPickerShowing = false
     @State var selectedImage: UIImage?
-
+    
     @State var imageList = [UIImage]()
     @State var filteredImageDictionary = [String:UIImage]()
     @State private var presentAlert = false
     @State private var showNewTrip = false
     @State var localUserID = ""
-
-//    @State private var is
+    @StateObject var locationManager = LocationManager()
+    
+    //    @State private var is
     // Voice Recognition
     @StateObject var speechRecognizer = SpeechRecognizer()
     @State private var isRecording = false
@@ -39,7 +42,7 @@ struct PostView: View {
     @State private var voiceMicImage = "mic"
     @State private var voiceMicColor:Color = .blue
     @State var imageDictionary = [String:UIImage]()
-
+    
     @Binding var selTab: Int
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -51,15 +54,15 @@ struct PostView: View {
         ZStack {
             Color(white: 0.07).edgesIgnoringSafeArea(.all)
             VStack{
-                    Text("Create a new memory")
-                        .foregroundColor(.white)
-                        .font(
-                            .custom(
-                                "AmericanTypewriter",
-                                fixedSize: 24)
-                            .weight(.bold))
-                        .foregroundColor(.white)
-                        .padding(16)
+                Text("Create a new memory")
+                    .foregroundColor(.white)
+                    .font(
+                        .custom(
+                            "AmericanTypewriter",
+                            fixedSize: 24)
+                        .weight(.bold))
+                    .foregroundColor(.white)
+                    .padding(16)
                 HStack(alignment: .top){
                     VStack {
                         Menu{
@@ -95,7 +98,7 @@ struct PostView: View {
                                 print("local user id \(localUserID)")
                                 print("\(model.tripList.map{$0.id})")
                                 print("filtered list \(model.tripList.filter{$0.id == localUserID})")
-                                    model.addTripData(userID: localUserID, tripName: tripName, timeAdded: Timestamp())
+                                model.addTripData(userID: localUserID, tripName: tripName, timeAdded: Timestamp())
                                 choiceMade = tripName
                                 tripName = ""
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -108,14 +111,14 @@ struct PostView: View {
                     
                     VStack {
                         if selectedImage == nil {
-                                Image("small-palm")
-                                    .frame(width: 120, height: 120)
-                                    .cornerRadius(8)
-                                    .overlay(Image(systemName: "camera.fill")
-                                        .foregroundColor(.white))
-                                    .simultaneousGesture(TapGesture().onEnded{
-                                                         isPickerShowing = true
-                                                     })
+                            Image("small-palm")
+                                .frame(width: 120, height: 120)
+                                .cornerRadius(8)
+                                .overlay(Image(systemName: "camera.fill")
+                                    .foregroundColor(.white))
+                                .simultaneousGesture(TapGesture().onEnded{
+                                    isPickerShowing = true
+                                })
                         }
                         if selectedImage != nil {
                             Image(uiImage: selectedImage!)
@@ -129,8 +132,8 @@ struct PostView: View {
                         }
                     }
                     .padding()
-
-   
+                    
+                    
                 }
                 VStack {
                     ZStack(alignment: .leading) {
@@ -168,17 +171,21 @@ struct PostView: View {
                         }
                         .padding(24)
                         .offset(y: 70)
-
+                        
                     }
-           
+                    
                     HStack{
                         //Upload button
+                        
+                        
+                        
                         if selectedImage != nil {
-                            Button("Post"){
+                            LocationButton{
+                                locationManager.requestLocation()
                                 selTab=0
                                 uploadPhoto()
-
                             }
+                            .labelStyle(.iconOnly)
                         }
                     }
                     .sheet(isPresented: $isPickerShowing, onDismiss: nil) {
@@ -186,42 +193,43 @@ struct PostView: View {
                         ImagePicker(selectedImage: $selectedImage, isPickerShowing: $isPickerShowing)
                     }
                 }
-                    
+                
             }
-
+            
         }
         .onAppear {
             getUserID()
+            
             print("lol tossa tekstiä")
         }
-
-
-            
-        }
-
+        
+        
+        
+    }
+    
     init(tab:Binding<Int>) {
         self._selTab = tab
         
-    model.getTripNames()
-    model.getPosts()
-    model.retreiveAllPostPhotos()
+        model.getTripNames()
+        model.getPosts()
+        model.retreiveAllPostPhotos()
     }
     
     
-   func getUserID() {
+    func getUserID() {
         for item in cdUserID {
             localUserID = item.userID!
         }
     }
-//    //timestamp
-//    func timeStamp() -> String {
-//        let now = Date()
-//        let formatter = DateFormatter()
-//        formatter.timeZone = TimeZone.current
-//        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-//        let dateString = formatter.string(from: now)
-//        return dateString
-//    }
+    //    //timestamp
+    //    func timeStamp() -> String {
+    //        let now = Date()
+    //        let formatter = DateFormatter()
+    //        formatter.timeZone = TimeZone.current
+    //        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+    //        let dateString = formatter.string(from: now)
+    //        return dateString
+    //    }
     
     func uploadPhoto() {
         //make sure selected image property isnt nil
@@ -248,10 +256,10 @@ struct PostView: View {
             if error == nil && metadata != nil {
                 
                 // Save the data in the database in post collection
-               
-                    model.addPostData(file: path,  latitude: 0.0, longitude: 0.0, notes: notes, tripID: chosenTripID, timeAdded: Timestamp())
-                    print("adding data succesfully")
-              
+ 
+                model.addPostData(file: path,  latitude: locationManager.location?.latitude ?? 0.0, longitude: locationManager.location?.longitude ?? 0.0, notes: notes, tripID: chosenTripID, timeAdded: Timestamp())
+                print("adding data succesfully")
+                
                 if selectedImage != nil {
                     DispatchQueue.main.async {
                         model.retrievedImages.append(self.selectedImage!)
@@ -262,10 +270,10 @@ struct PostView: View {
             }
         }
     }
-
     
     
-    }
+    
+}
 
 
 

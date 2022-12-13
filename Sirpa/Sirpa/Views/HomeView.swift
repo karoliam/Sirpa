@@ -40,22 +40,15 @@ struct HomeView: View {
             //            MapView(locations: locations, lManager: $locationManager.region)
 
             VStack{
-                if let location = locationManager.location{
-                    Text("**Current location:**\(location.latitude),\(location.longitude)")
-                        .font(.callout)
-                        .foregroundColor(.white)
-                        .padding()
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                    
-                }
+
                 Spacer()
-//                LocationButton{
-//                    locationManager.requestLocation()
-//                }
-//                .frame(width: 180, height: 40)
-//                .cornerRadius(30)
-//                .symbolVariant(.fill)
-//                .foregroundColor(.white)
+                LocationButton{
+                    locationManager.requestLocation()
+                }
+                .frame(width: 180, height: 40)
+                .cornerRadius(30)
+                .symbolVariant(.fill)
+                .foregroundColor(.white)
                 Button("pinn"){
                     let loc = model.mapMarkers.randomElement()
                     locationManager.randomPinn(pinn: loc ?? MapMarkers(id: "none",
@@ -93,7 +86,7 @@ struct AreaMap: View {
         )
 
         return Map(coordinateRegion: binding, showsUserLocation: true, annotationItems: markersList, annotationContent: {item in
-            MapPin(coordinate: item.coordinate)
+            MapMarker(coordinate: item.coordinate)
                 
                 
 //            MapAnnotation(coordinate:item.coordinate){
