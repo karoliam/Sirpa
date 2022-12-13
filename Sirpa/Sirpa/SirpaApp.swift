@@ -34,7 +34,7 @@ struct SirpaApp: App {
   var body: some Scene {
     WindowGroup {
       NavigationView {
-
+            
               FirstPage().environment(\.managedObjectContext, coreDataManager.container.viewContext)
 
       }

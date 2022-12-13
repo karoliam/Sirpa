@@ -22,49 +22,59 @@ struct FirstPage: View {
 
     
     var body: some View {
-        
-        VStack{
-            Text("Sirpa")
-                .font(
-                    .custom(
-                        "AmericanTypewriter",
-                        fixedSize: 72)
-                    .weight(.bold))
-                .foregroundColor(.white)
-            NavigationLink (destination: Login().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)) {
-                Text("Start your journey")
-                    .font(
-                        .custom(
-                            "AmericanTypewriter",
-                            fixedSize: 24)
-                        .weight(.bold))
-                    .foregroundColor(.white)
-            
-                    .padding(16)
-                Image(systemName: "chevron.right")
-                    .resizable()
-                    .frame(width: 16, height: 20)
-                    .foregroundColor(.white)
-                    .offset(x: -12)
+        ZStack{
+            if(localUserID != ""){
+                ContentView().environment(\.managedObjectContext, self.viewContext)
+            } else {
+                VStack{
+                    Text("Sirpa")
+                        .font(
+                            .custom(
+                                "AmericanTypewriter",
+                                fixedSize: 72)
+                            .weight(.bold))
+                        .foregroundColor(.white)
+                    NavigationLink (destination: Login().environment(\.managedObjectContext, self.viewContext)) {
+                        Text("Start your journey")
+                            .font(
+                                .custom(
+                                    "AmericanTypewriter",
+                                    fixedSize: 24)
+                                .weight(.bold))
+                            .foregroundColor(.white)
+                        
+                            .padding(16)
+                        Image(systemName: "chevron.right")
+                            .resizable()
+                            .frame(width: 16, height: 20)
+                            .foregroundColor(.white)
+                            .offset(x: -12)
+                        
+                    }
+                    
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(.white))
+                    .offset(y:250)
+                    
+                    
+                }
                 
+                .background(
+                    Image("palm-tree")
+                )
             }
-            .onAppear{
-                getUserID()
-            }
-            .overlay(
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke(.white))
-            .offset(y:250)
-
-
-            }.background(
-                Image("palm-tree")
-            )
+        }
+        .onAppear{
+            getUserID()
+        }
     }
+        
     func getUserID() {
         for item in cdUserID {
             localUserID = item.userID!
         }
+        print("\(localUserID)")
     }
 }
     

@@ -13,7 +13,7 @@ import FirebaseStorage
 struct Login: View {
 
     @ObservedObject var model = ViewModel()
-    @Environment (\.managedObjectContext) var managedObjectContext
+    @Environment (\.managedObjectContext) var viewContext
 
     
     @State var username = ""
@@ -23,8 +23,11 @@ struct Login: View {
     @State var imageDictionary = [String:UIImage]()
     @State var isPickerShowing = false
     
+    @State var localUserID = ""
 
     
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.userID)]) var cdUserID:
+    FetchedResults<OnlineUser>
     // core data
 //    let coreDM: CoreDataManager
     //Saa textfieldistä arvon
@@ -89,12 +92,17 @@ struct Login: View {
                             .background(Color.white.opacity(0.9))
                             .cornerRadius(8)
                             .padding([.horizontal], 24)
-
+                    Button("location"){
+                        getUserID()
+                    }
+                    Text(localUserID)
                         //Upload button
                     if username != "" {
                         
-                        NavigationLink (destination: ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)) {
-                                Text("Login")
+                        
+                        
+                        NavigationLink (destination: ContentView().environment(\.managedObjectContext, self.viewContext)) {
+                                Text("\(localUserID)")
                                     .font(
                                         .custom(
                                             "AmericanTypewriter",
@@ -134,7 +142,14 @@ struct Login: View {
         }
 
         
-    
+    func getUserID() {
+        for item in cdUserID {
+            print(item)
+            localUserID = item.userID!
+        }
+        print("moi \(cdUserID)")
+        print("moi \(localUserID)")
+    }
     
     func uploadPhoto () {
         //make sure selected image property isnt nil
@@ -168,7 +183,7 @@ struct Login: View {
                         // TODO: lisää tänne imageDictionary
                     }
                     DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
-                        CoreDataManager().saveUserID(userID: model.userList.map{$0.id}[0], context: managedObjectContext)
+                        CoreDataManager().saveUserID(userID: model.userList.map{$0.id}[0], context: viewContext)
 
                     }
 
@@ -182,6 +197,7 @@ struct Login: View {
     init() {
         model.getUserInfo()
     }
+    
 }
 
 

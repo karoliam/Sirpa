@@ -213,17 +213,6 @@ struct AreaMap: View {
 
         return Map(coordinateRegion: binding, showsUserLocation: true, annotationItems: markersList, annotationContent: {item in
             MapMarker(coordinate: item.coordinate)
-                
-                
-//            MapAnnotation(coordinate:item.coordinate){
-//                Circle()
-//            }
-//            DispatchQueue.main.async{
-//                MapAnnotation(coordinate:item.coordinate){
-//                    Circle()
-//                }
-//            }
-                
         })
         .onAppear(){
             MKMapView.appearance().mapType = .satelliteFlyover

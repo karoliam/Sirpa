@@ -136,10 +136,10 @@ struct ProfileView: View {
                                                                          .padding(.trailing, 125)
                                                                          HStack {
                                                                  
-                                                                             Circle()
-                                                                                 .fill(Color.red)
-                                                                                 .frame(width: 150, height: 150)
-                                                                                 .padding(30)
+                                                                             SmallMap(region: .constant(MKCoordinateRegion(
+                                                                                 center: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude),
+                                                                                 span: MKCoordinateSpan(latitudeDelta: 11, longitudeDelta:11)
+                                                                             )),markersList: [MapMarkers(id: "id", coordinate: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude), file: "files", notes: "notes", timeStamp: Timestamp(), tripID: "tripID", userID: "userID")])
                                                                          }
                                                                          Spacer()
                                                                          HStack {
