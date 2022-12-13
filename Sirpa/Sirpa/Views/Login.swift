@@ -122,6 +122,7 @@ struct Login: View {
         }.background(
             Image("traveling")
         )
+        .navigationBarBackButtonHidden(true)
 
       
 

@@ -51,6 +51,8 @@ struct ContentView: View {
                 
         
         }
+        .navigationBarBackButtonHidden(true)
+
 }
             
     
