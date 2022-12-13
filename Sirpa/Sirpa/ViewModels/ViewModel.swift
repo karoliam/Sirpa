@@ -21,7 +21,7 @@ class ViewModel: ObservableObject {
     @Published var postList = [Posts]()
     @Published var userList = [User]()
     @Published var retrievedImages = [UIImage]()
-    @Published var profileImages = [UIImage]()
+    @Published var profilePhotoDictionary = [String:UIImage]()
     @Published var imageDictionary = [String:UIImage]()
     @Published var mapMarkers = [MapMarkers]()
     @Published var mapMarkerNew = MapMarkers(id: "", coordinate: CLLocationCoordinate2D(), file: "", notes: "", timeStamp: Timestamp(), tripID: "", userID: "")
@@ -47,13 +47,13 @@ class ViewModel: ObservableObject {
                     // specify the path
                     let fileRef = storageRef.child(path.value)
                     // retreive the data
-                    fileRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                    fileRef.getData(maxSize: 1 * 1024 * 768) { data, error in
                         // check for errors
                         if error == nil && data != nil {
                             // create a UIImage and put it in our array for display
                             if let image = UIImage(data: data!) {
                                 DispatchQueue.main.async {
-                                    self.profileImages.append(image)                                    
+                                    self.profilePhotoDictionary.updateValue(image, forKey: path.key)
                                 }
                             }
                         }
@@ -83,7 +83,7 @@ class ViewModel: ObservableObject {
                     // specify the path
                     let fileRef = storageRef.child(path.value)
                     // retreive the data
-                    fileRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                    fileRef.getData(maxSize: 1 * 1024 * 768) { data, error in
                         // check for errors
                         if error == nil && data != nil {
                             // create a UIImage and put it in our array for display

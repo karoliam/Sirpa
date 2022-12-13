@@ -145,42 +145,57 @@ struct HomeView: View {
             
             AreaMap(region: $locationManager.region, markersList: $model.mapMarkers)
             //            MapView(locations: locations, lManager: $locationManager.region)
-            
             VStack{
-
                 Spacer()
-                LocationButton{
-                    locationManager.requestLocation()
+                HStack{
+                    Button(action: {
+                        let loc = model.mapMarkers.randomElement()
+                        locationManager.randomPinn(pinn: loc ?? MapMarkers(id: "none",
+                                                                           coordinate: CLLocationCoordinate2D(latitude: 60.223932, longitude: 24.758298),
+                                                                           file: "none",
+                                                                           notes: "none",
+                                                                           timeStamp: Timestamp(),
+                                                                           tripID: "none",
+                                                                           userID: "none"))
+                    }) {
+                        Image(systemName: "dice")
+                            .foregroundColor(.white)
+                            .font(.system(size:20))
+                    }
+                    .frame(width: 45, height: 45)
+                    .background(.blue)
+                    .cornerRadius(100)
+                    .padding(.trailing, 30)
+                    
+                    
+                    Button("See all posts") {
+                        isVisible.toggle()
+                    }.frame(width: 180, height: 40)
+                        .background(.blue)
+                        .cornerRadius(8)
+                        .foregroundColor(.white)
+                        .sheet(isPresented: $isVisible) {
+                            AllPostsSheet()
+                        }
+                    LocationButton(){
+                        locationManager.requestLocation()
+                    }
+                        .symbolVariant(.fill)
+                        .foregroundColor(.white)
+                        .cornerRadius(25)
+                        .labelStyle(.iconOnly)
+                        .padding(.leading, 30)
+//                        .frame(width: 50, height: 50)
+
+           
                 }
-                .frame(width: 180, height: 40)
-                .cornerRadius(30)
-                .symbolVariant(.fill)
-                .foregroundColor(.white)
-                Button("pinn"){
-                    let loc = model.mapMarkers.randomElement()
-                    locationManager.randomPinn(pinn: loc ?? MapMarkers(id: "none",
-                                                                       coordinate: CLLocationCoordinate2D(latitude: 60.223932, longitude: 24.758298),
-                                                                       file: "none",
-                                                                       notes: "none",
-                                                                       timeStamp: Timestamp(),
-                                                                       tripID: "none",
-                                                                       userID: "none"))
-                }
+                .padding(.bottom, 50)
             }
-            .padding()
-            Button("See all posts") {
-                isVisible.toggle()
-            }.frame(width: 100, height: 100)
-                .background(.white)
-                .sheet(isPresented: $isVisible) {
-                    AllPostsSheet()
-                }
         }
 
     }
     init(){
         model.getPosts()
-
     }
         
 }
