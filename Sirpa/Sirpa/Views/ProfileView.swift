@@ -15,6 +15,8 @@ struct ProfileView: View {
     
     
     @ObservedObject var model = ViewModel()
+    @ObservedObject var timeformatter = TimeFormatter()
+
     @State var tripName = ""
     @State var notes = ""
     @State var id = ""
@@ -47,20 +49,28 @@ struct ProfileView: View {
             Color(white: 0.07).edgesIgnoringSafeArea(.all)
             VStack{
                 VStack{
-                    HStack{
-                        VStack{
-                            Text("\(model.userList.filter{$0.id == getUserID() }.map{$0.username}.first ?? "no username found")")
+                        Text("\(model.userList.filter{$0.id == getUserID() }.map{$0.username}.first ?? "no username found")")
                                 .foregroundColor(.white)
+                                .fontWeight(.bold)
+                                .frame(alignment: .center)
                                 .padding(20)
+                        HStack{
+                            
+                                VStack{
+                                    Text("Trips")
+                                        .fontWeight(.bold)
+                                    Text("\(String(model.tripList.filter {$0.userID.contains(getUserID())}.count))")
+                                }.padding(20)
+                                VStack {
+                                    Text("Home country")
+                                        .fontWeight(.bold)
+                                    Text("\(String(model.userList.filter{$0.id == getUserID() }.map{$0.homeCountry}.first ?? "homeless"))")
+                                }
+             
                                 
                         }
 
-                        VStack{
-                            Text("\(String(model.tripList.filter {$0.userID.contains(getUserID())}.count))")
-                            Text("trips")
-                        }.padding(20)
-                  
-                    }
+                    
               
                     List(model.tripList.filter {
                         $0.userID.contains(getUserID())
@@ -96,17 +106,8 @@ struct ProfileView: View {
                                                                     VStack{
                                                                         HStack{
                                                                             VStack{
-                                                                                //PROFILEPIC JA DATE ADDED
-                                                                                Text("\(Date(), style: .date)")
-                                                                            }
-                                                                            VStack{
-                                                                                //IF SHARED
-                                                                                Text("Shared")
-                                                                            }
-                                                                            .padding()
-                                                                            VStack{
                                                                                 //TIMEADDED
-                                                                                Text("\(Date(), style: .time)")
+                                                                                Text("\(timeformatter.formatDate(date: item.timeAdded))")
                                                                             }
                                                                         }
                                                                         Spacer()
