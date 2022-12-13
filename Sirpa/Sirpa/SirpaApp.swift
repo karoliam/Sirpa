@@ -38,6 +38,7 @@ struct SirpaApp: App {
               FirstPage().environment(\.managedObjectContext, coreDataManager.container.viewContext)
 
       }
+
     }
   }
 }

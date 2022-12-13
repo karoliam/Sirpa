@@ -213,7 +213,7 @@ struct AreaMap: View {
                 
         })
         .onAppear(){
-            MKMapView.appearance().mapType = .hybridFlyover
+            MKMapView.appearance().mapType = .satelliteFlyover
             MKMapView.appearance().pointOfInterestFilter = .excludingAll
         }
     }

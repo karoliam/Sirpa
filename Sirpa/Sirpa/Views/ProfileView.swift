@@ -127,9 +127,10 @@ struct ProfileView: View {
                                                                         HStack {
                                                                                 Image(systemName:"person.fill")
                                                                                     .font(.system(size: 50))
-                                                                            Circle()
-                                                                                .size(width: 150, height: 150)
-                                                                                .fill(Color.red)
+                                                                            SmallMap(region: .constant(MKCoordinateRegion(
+                                                                                center: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude),
+                                                                                span: MKCoordinateSpan(latitudeDelta: 11, longitudeDelta:11)
+                                                                            )),markersList: [MapMarkers(id: "id", coordinate: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude), file: "files", notes: "notes", timeStamp: Timestamp(), tripID: "tripID", userID: "userID")])
 
                                                                         }
                                                                         Spacer()
@@ -205,9 +206,11 @@ struct ProfileView: View {
             }
             return localUserID
         }
+    
+    
     }
     
-    
+
     struct ProfileView_Previews: PreviewProvider {
         static var previews: some View {
             ProfileView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
