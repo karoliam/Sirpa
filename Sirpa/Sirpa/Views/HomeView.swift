@@ -63,8 +63,6 @@ struct AllPostsSheet: View {
                                             }
                                             Spacer()
                                             HStack {
-                                                Image(systemName:"person.fill")
-                                                    .font(.system(size: 50))
                                                 SmallMap(region: .constant(MKCoordinateRegion(
                                                     center: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude),
                                                     span: MKCoordinateSpan(latitudeDelta: 11, longitudeDelta:11)
