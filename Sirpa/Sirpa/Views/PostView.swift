@@ -67,7 +67,7 @@ struct PostView: View {
                             }
                             
                             
-                            ForEach(model.tripList.filter{$0.id.contains(getUserID())}.map{item in item.tripName + "#" + item.id}, id: \.self) { item in
+                            ForEach(model.tripList.filter{$0.userID == localUserID}.map{item in item.tripName + "#" + item.id}, id: \.self) { item in
                                 Button(action: {
                                     choiceMade = String(item.split(separator: "#")[0])
                                     chosenTripID = String(item.split(separator: "#")[1])
@@ -89,7 +89,11 @@ struct PostView: View {
                             TextField("Trip name", text: $tripName)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                             Button("Add") {
-                                    model.addTripData(userID: getUserID(), tripName: tripName, timeAdded: Timestamp())
+                                // todo print locauser id
+                                print("local user id \(localUserID)")
+                                print("\(model.tripList.map{$0.id})")
+                                print("filtered list \(model.tripList.filter{$0.id == localUserID})")
+                                    model.addTripData(userID: localUserID, tripName: tripName, timeAdded: Timestamp())
                                 choiceMade = tripName
                                 tripName = ""
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -183,6 +187,10 @@ struct PostView: View {
             }
 
         }
+        .onAppear {
+            getUserID()
+            print("lol tossa tekstiä")
+        }
 
 
             
@@ -195,11 +203,10 @@ struct PostView: View {
     }
     
     
-    func getUserID() -> String {
+   func getUserID() {
         for item in cdUserID {
             localUserID = item.userID!
         }
-        return localUserID
     }
 //    //timestamp
 //    func timeStamp() -> String {

@@ -25,8 +25,11 @@ struct BottomTab: View {
 //                            self.handleSwipe(translation: $0.translation.width)
 //                        })))
                     PostView()
+                        .toolbar(.visible, for: .tabBar)
+                        .toolbarBackground(Color.black, for: .tabBar)
                         .tabItem(){
                             Image(systemName: "envelope.fill")
+                            
                         }
                         .tag(2)
                     ProfileView()

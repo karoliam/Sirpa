@@ -67,18 +67,17 @@ struct ProfileView: View {
                     }) {
                         item in
                         NavigationLink {
-                            Text("Item at \(item.tripName) with id \(item.id)")
+                            Text("\(item.tripName)")
+                                .font(.title)
                             // posts
                             List(model.postList.filter {
                                 $0.tripID.contains(item.id)
                             }) {
                                 item in
                                 ZStack{
-//                                    ScrollView{
                                                 HStack(){
-                                                    
                                                         if(notesShown == true) {
-                                                            List(model.imageDictionary.filter{
+                                                            ForEach(model.imageDictionary.filter{
                                                                 $0.key.contains(item.id)
                                                             }.map {
                                                                 $0.value
@@ -131,7 +130,7 @@ struct ProfileView: View {
                                                                     notesShown.toggle()
                                                                 }
                                                         } else {
-                                                            List(model.imageDictionary.filter{
+                                                            ForEach(model.imageDictionary.filter{
                                                                 $0.key.contains(item.id)
                                                             }.map {
                                                                 $0.value
@@ -154,8 +153,7 @@ struct ProfileView: View {
                                             
 
                                     }
-                                }.navigationBarTitle("Trip place", displayMode: .inline)
-                                    .navigationBarBackButtonHidden(true)
+                                }
                                 
                                 
                                 
