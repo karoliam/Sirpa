@@ -27,7 +27,7 @@ struct ProfileView: View {
     @State var selectedImage: UIImage?
     @State var retrievedImages = [UIImage]()
     @State var tripID = ""
-    @State var profilePhoto = [UIImage]()
+//    @State var profilePhoto = [UIImage]()
     @State var imageDictionary = [String:UIImage]()
     @State var profileImageDictionary = [String:UIImage]()
     @State var imageList = [UIImage]()
@@ -51,12 +51,23 @@ struct ProfileView: View {
             Color(white: 0.07).edgesIgnoringSafeArea(.all)
             VStack{
                 VStack{
+               
                         Text("\(model.userList.filter{$0.id == getUserID() }.map{$0.username}.first ?? "no username found")")
                                 .foregroundColor(.white)
                                 .fontWeight(.bold)
                                 .frame(alignment: .center)
                                 .padding(20)
                         HStack{
+                            
+                            ForEach(model.profileImages, id: \.self) { item in
+                                Image(uiImage: item)
+                                    .frame(width: 200, height: 200)
+                                    .onAppear {
+                                        model.getProfilePhotos()
+                                        model.getUserInfo()
+                                    }
+                            }
+
                             
                                 VStack{
                                     Text("Trips")

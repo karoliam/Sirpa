@@ -21,11 +21,48 @@ class ViewModel: ObservableObject {
     @Published var postList = [Posts]()
     @Published var userList = [User]()
     @Published var retrievedImages = [UIImage]()
+    @Published var profileImages = [UIImage]()
     @Published var imageDictionary = [String:UIImage]()
     @Published var mapMarkers = [MapMarkers]()
     @Published var mapMarkerNew = MapMarkers(id: "", coordinate: CLLocationCoordinate2D(), file: "", notes: "", timeStamp: Timestamp(), tripID: "", userID: "")
     private var userIDMapMarkers = ""
     let db = Firestore.firestore()
+    
+    func getProfilePhotos() {
+        // get the data from the database
+        db.collection("userInfo").addSnapshotListener { snapshot, error in
+            if error == nil && snapshot != nil {
+                
+                var paths = Dictionary<String, String>()
+                // loop through all the returned docs
+                for doc in snapshot!.documents {
+                    // extract the file path
+                    paths.updateValue(doc[ "file"] as! String, forKey: doc.documentID)
+                }
+                
+                // loop through each file path and fetch the data from storage
+                for path in paths {
+                    // get a reference to storage
+                    let storageRef = Storage.storage().reference()
+                    // specify the path
+                    let fileRef = storageRef.child(path.value)
+                    // retreive the data
+                    fileRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                        // check for errors
+                        if error == nil && data != nil {
+                            // create a UIImage and put it in our array for display
+                            if let image = UIImage(data: data!) {
+                                DispatchQueue.main.async {
+                                    self.profileImages.append(image)                                    
+                                }
+                            }
+                        }
+                    }
+                } // end loop throughs
+            }
+        }
+    }
+    
     
     func retreiveAllPostPhotos() {
         // get the data from the database
@@ -63,7 +100,6 @@ class ViewModel: ObservableObject {
             }
         }
     }
-    
 
     func addTripData(userID: String, tripName: String, timeAdded: Timestamp) {
  
