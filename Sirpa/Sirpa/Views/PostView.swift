@@ -11,6 +11,7 @@ import FirebaseStorage
 import FirebaseFirestore
 import CoreData
 
+
 struct PostView: View {
     @State private var username: String = ""
     @State var choiceMade = "Trips"
@@ -39,6 +40,7 @@ struct PostView: View {
     @State private var voiceMicColor:Color = .blue
     @State var imageDictionary = [String:UIImage]()
 
+    @Binding var selTab: Int
     
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -172,10 +174,11 @@ struct PostView: View {
                     HStack{
                         //Upload button
                         if selectedImage != nil {
-                            NavigationLink("Post!", destination: ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext))
-                                .simultaneousGesture(TapGesture().onEnded{
-                                                     uploadPhoto()
-                                                 })
+                            Button("Post"){
+                                selTab=0
+                                uploadPhoto()
+
+                            }
                         }
                     }
                     .sheet(isPresented: $isPickerShowing, onDismiss: nil) {
@@ -196,7 +199,9 @@ struct PostView: View {
             
         }
 
-    init() {
+    init(tab:Binding<Int>) {
+        self._selTab = tab
+        
     model.getTripNames()
     model.getPosts()
     model.retreiveAllPostPhotos()
@@ -263,11 +268,5 @@ struct PostView: View {
     }
 
 
-
-struct PostView_Previews: PreviewProvider {
-    static var previews: some View {
-        PostView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-}
 
 

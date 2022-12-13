@@ -24,7 +24,7 @@ struct BottomTab: View {
 //                        .highPriorityGesture(DragGesture().onEnded(({
 //                            self.handleSwipe(translation: $0.translation.width)
 //                        })))
-                    PostView()
+                    PostView(tab: $selectedTab)
                         .toolbar(.visible, for: .tabBar)
                         .toolbarBackground(Color.black, for: .tabBar)
                         .tabItem(){
