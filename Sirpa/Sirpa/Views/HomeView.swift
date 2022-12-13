@@ -9,6 +9,7 @@ import SwiftUI
 import CoreLocationUI
 import Firebase
 import FirebaseFirestore
+import FirebaseStorage
 
 struct Location: Identifiable{
     let id = UUID()
@@ -16,8 +17,114 @@ struct Location: Identifiable{
     let coordinate: CLLocationCoordinate2D
 }
 
+struct AllPostsSheet: View {
+    @ObservedObject var model = ViewModel()
+    @ObservedObject var timeformatter = TimeFormatter()
+
+    @Environment(\.dismiss) var dismiss
+    @State private var notesShown = false
+
+
+    
+    
+    var body: some View {
+        ZStack {
+            
+            
+            List(model.postList) {
+                item in
+                ZStack{
+                    HStack{
+                        if(notesShown == true) {
+                            ForEach(model.imageDictionary.filter{
+                                $0.key.contains(item.id)
+                            }.map {
+                                $0.value
+                            }
+                                    , id: \.self) { item in
+                                
+                                Image(uiImage: item)
+                                    .resizable()
+                                    .frame(width: 390, height: 600)
+                                    .opacity(0.5)
+                                
+                            }
+                                    .frame(width: 390, height: 600)
+                                    .foregroundColor(.white)
+                                    .overlay(alignment: .center) {
+                                        VStack{
+                                            HStack{
+                                                VStack{
+                                                    
+                                                    //PROFILEPIC JA DATE ADDED
+                                                    Text("\(timeformatter.formatDate(date: item.timeAdded))")
+                                                        .padding()
+                                                }
+                                            }
+                                            Spacer()
+                                            HStack {
+                                                Image(systemName:"person.fill")
+                                                    .font(.system(size: 50))
+                                                Circle()
+                                                    .fill(Color.red)
+                                                    .frame(width: 150, height: 150)
+                                                    .padding(30)
+                                            }
+                                            Spacer()
+                                            HStack {
+                                                //NOTES
+                                                Text("\(item.notes)")
+                                            } .frame(width: 350)
+                                            Spacer()
+                                        }
+                                    }
+                                    .onTapGesture(count: 1) {
+                                        notesShown.toggle()
+                                    }
+                        } else {
+                            ForEach(model.imageDictionary.filter{
+                                $0.key.contains(item.id)
+                            }.map {
+                                $0.value
+                            }
+                                    , id: \.self) { item in
+                                
+                                Image(uiImage: item)
+                                    .resizable()
+                                    .frame(width: 390, height: 600)
+                                
+                            }
+                                    .frame(width: 390, height: 600)
+                                    .onTapGesture(count: 1) {
+                                        notesShown.toggle()
+                                    }
+                            
+                        }
+                        
+                        
+                        
+                        
+                    }
+                }
+                
+                
+                
+            }
+            
+        }.onAppear {
+            model.retreiveAllPostPhotos()
+            model.getPosts()
+        
+    }
+    }
+    
+}
+
+
 
 struct HomeView: View {
+    
+    @State private var isVisible = false
     
     @StateObject var locationManager = LocationManager()
     @ObservedObject var model = ViewModel()
@@ -38,7 +145,7 @@ struct HomeView: View {
             
             AreaMap(region: $locationManager.region, markersList: $model.mapMarkers)
             //            MapView(locations: locations, lManager: $locationManager.region)
-
+            
             VStack{
 
                 Spacer()
@@ -61,7 +168,13 @@ struct HomeView: View {
                 }
             }
             .padding()
-            
+            Button("See all posts") {
+                isVisible.toggle()
+            }.frame(width: 100, height: 100)
+                .background(.white)
+                .sheet(isPresented: $isVisible) {
+                    AllPostsSheet()
+                }
         }
 
     }
