@@ -20,15 +20,13 @@ struct Location: Identifiable{
 struct HomeView: View {
     
     @StateObject var locationManager = LocationManager()
-    
+    @ObservedObject var model = ViewModel()
+
     @State var mapRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 60.223932, longitude: 24.758298),
         span: MKCoordinateSpan(latitudeDelta: 110, longitudeDelta:110)
     )
-    @Binding var markerLocations:[MapMarkers]
-    @State var locations = [
-
-    ]
+    @State var locations=[]
     
     var body: some View {
         ZStack{
@@ -38,7 +36,7 @@ struct HomeView: View {
             //                MKMapView.appearance().pointOfInterestFilter = .excludingAll
             //            }
             
-            AreaMap(region: $locationManager.region, markersList: $markerLocations)
+            AreaMap(region: $locationManager.region, markersList: $model.mapMarkers)
             //            MapView(locations: locations, lManager: $locationManager.region)
 
             VStack{
@@ -59,7 +57,7 @@ struct HomeView: View {
 //                .symbolVariant(.fill)
 //                .foregroundColor(.white)
                 Button("pinn"){
-                    let loc = markerLocations.randomElement()
+                    let loc = model.mapMarkers.randomElement()
                     locationManager.randomPinn(pinn: loc ?? MapMarkers(id: "none",
                                                                        coordinate: CLLocationCoordinate2D(latitude: 60.223932, longitude: 24.758298),
                                                                        file: "none",
@@ -72,7 +70,13 @@ struct HomeView: View {
             .padding()
             
         }
+
     }
+    init(){
+        model.getPosts()
+
+    }
+        
 }
 
 struct AreaMap: View {
@@ -87,14 +91,8 @@ struct AreaMap: View {
                 }
             }
         )
-        let secondBinding = Binding(
-            get: {self.markersList},
-            set: {value in
-                DispatchQueue.main.async {
-                    self.markersList = value
-                }
-            })
-        return Map(coordinateRegion: binding, showsUserLocation: true, annotationItems: secondBinding.wrappedValue, annotationContent: {item in
+
+        return Map(coordinateRegion: binding, showsUserLocation: true, annotationItems: markersList, annotationContent: {item in
             MapPin(coordinate: item.coordinate)
                 
                 

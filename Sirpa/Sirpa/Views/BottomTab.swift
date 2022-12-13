@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct BottomTab: View {
-    @Binding var markers: [MapMarkers]
     @State private var selectedTab = 0
     @State private var oldSelectedTab = 0
     @State private var isPostingVisible = false
@@ -13,7 +12,7 @@ struct BottomTab: View {
         VStack{
             NavigationView{
                 TabView(selection : $selectedTab){
-                    HomeView( markerLocations: $markers)
+                    HomeView()
                     .tabItem(){
                         Image(systemName: "globe.americas")
                         Text("Home")

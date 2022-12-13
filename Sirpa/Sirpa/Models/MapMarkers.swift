@@ -12,7 +12,7 @@ import FirebaseFirestore
 import Firebase
 struct MapMarkers: Identifiable {
     let id: String
-    let coordinate: CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D
     let file: String
     let notes: String
     let timeStamp: Timestamp

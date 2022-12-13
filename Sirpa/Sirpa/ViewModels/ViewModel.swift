@@ -10,6 +10,10 @@ import SwiftUI
 import Firebase
 import FirebaseFirestore
 import FirebaseStorage
+import CoreLocationUI
+import MapKit
+
+
 
 class ViewModel: ObservableObject {
     
@@ -18,7 +22,9 @@ class ViewModel: ObservableObject {
     @Published var userList = [User]()
     @Published var retrievedImages = [UIImage]()
     @Published var imageDictionary = [String:UIImage]()
-
+    @Published var mapMarkers = [MapMarkers]()
+    @Published var mapMarkerNew = MapMarkers(id: "", coordinate: CLLocationCoordinate2D(), file: "", notes: "", timeStamp: Timestamp(), tripID: "", userID: "")
+    private var userIDMapMarkers = ""
     let db = Firestore.firestore()
     
     func retreiveAllPostPhotos() {
@@ -185,6 +191,9 @@ class ViewModel: ObservableObject {
                             // Create a todo item for each document returned
                             return Posts(id: d.documentID, file: d["file"] as? String ?? "", latitude: d["latitude"] as? Double ?? 0.0 , longitude: d["longitude"] as? Double ?? 0.0, notes: d["notes"] as? String ?? "", tripID: d["tripID"] as? String ?? "",  timeAdded: d["timeAdded"] as? Timestamp ?? Timestamp())
                         }
+                        
+                        print("postaukset tossa \(self.postList)")
+                        self.addingDataToMapMarkers()
                     }
                 }
                 
@@ -197,7 +206,20 @@ class ViewModel: ObservableObject {
         }
             
         }
-    
+    func addingDataToMapMarkers() {
+        
+        for item in tripList {
+            userIDMapMarkers = item.userID
+        }
+        for item in postList {
+            
+            mapMarkerNew = MapMarkers(id: item.id, coordinate: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude), file: item.file, notes: item.notes, timeStamp: Timestamp(), tripID: item.tripID, userID: userIDMapMarkers)
+            
+                mapMarkers.append(mapMarkerNew)
+        }
+        print("markkers being added")
+        print( mapMarkers)
+    }
     
     func deletePost(postToDelete: Posts) {
         

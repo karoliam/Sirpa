@@ -44,10 +44,8 @@ struct ContentView: View {
         ZStack{
   
                 
-            BottomTab(markers: $mapMarkers)
-            Button("load markers"){
-                addingDataToMapMarkers()
-            }
+            BottomTab()
+
                 
         
         }
