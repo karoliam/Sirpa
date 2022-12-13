@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocationUI
 
 struct BottomTab: View {
     @State private var selectedTab = 0
@@ -6,7 +7,8 @@ struct BottomTab: View {
     @State private var isPostingVisible = false
     let tabsTotal = 2
     let minDragTranlationForSwipe: CGFloat = 50
-    
+    @StateObject var locationManager = LocationManager()
+
     
     var body:some View{
         VStack{
@@ -23,7 +25,9 @@ struct BottomTab: View {
 //                        .highPriorityGesture(DragGesture().onEnded(({
 //                            self.handleSwipe(translation: $0.translation.width)
 //                        })))
-                    PostView(tab: $selectedTab)
+
+                        
+                        PostView(tab: $selectedTab)
                         .toolbar(.visible, for: .tabBar)
                         .toolbarBackground(Color.black, for: .tabBar)
                         .tabItem(){

@@ -92,6 +92,7 @@ struct Login: View {
 
                         //Upload button
                     if username != "" {
+                        
                         NavigationLink (destination: ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)) {
                                 Text("Login")
                                     .font(
@@ -106,6 +107,7 @@ struct Login: View {
                                             .stroke(.white))
                             }.padding(20)
                                 .simultaneousGesture(TapGesture().onEnded{
+                                    
                                     uploadPhoto()
                                     
                                 })

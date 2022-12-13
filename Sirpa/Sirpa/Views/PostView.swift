@@ -185,6 +185,9 @@ struct PostView: View {
                                 selTab=0
                                 uploadPhoto()
                             }
+                            
+                            .frame(width: 60, height: 30)
+                            .cornerRadius(50)
                             .labelStyle(.iconOnly)
                         }
                     }

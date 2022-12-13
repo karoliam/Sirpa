@@ -65,10 +65,10 @@ struct AllPostsSheet: View {
                                             HStack {
                                                 Image(systemName:"person.fill")
                                                     .font(.system(size: 50))
-                                                Circle()
-                                                    .fill(Color.red)
-                                                    .frame(width: 150, height: 150)
-                                                    .padding(30)
+                                                SmallMap(region: .constant(MKCoordinateRegion(
+                                                    center: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude),
+                                                    span: MKCoordinateSpan(latitudeDelta: 11, longitudeDelta:11)
+                                                )),markersList: [MapMarkers(id: "id", coordinate: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude), file: "files", notes: "notes", timeStamp: Timestamp(), tripID: "tripID", userID: "userID")])
                                             }
                                             Spacer()
                                             HStack {
@@ -215,6 +215,40 @@ struct AreaMap: View {
         .onAppear(){
             MKMapView.appearance().mapType = .hybridFlyover
             MKMapView.appearance().pointOfInterestFilter = .excludingAll
+        }
+    }
+}
+struct SmallMap: View {
+    @Binding var region: MKCoordinateRegion
+     var markersList: [MapMarkers]
+    var body: some View {
+        let binding = Binding(
+            get: { self.region },
+            set: { newValue in
+                DispatchQueue.main.async {
+                    self.region = newValue
+                }
+            }
+        )
+
+        return Map(coordinateRegion: binding, interactionModes:[], annotationItems: markersList, annotationContent: {item in
+            MapMarker(coordinate: item.coordinate)
+                
+                
+//            MapAnnotation(coordinate:item.coordinate){
+//                Circle()
+//            }
+//            DispatchQueue.main.async{
+//                MapAnnotation(coordinate:item.coordinate){
+//                    Circle()
+//                }
+//            }
+                
+        })
+        .frame(width: 150, height: 150)
+        .cornerRadius(100)
+        .onAppear(){
+            MKMapView.appearance().mapType = .hybrid
         }
     }
 }
