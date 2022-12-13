@@ -9,6 +9,7 @@ import SwiftUI
 import CoreLocationUI
 import Firebase
 import FirebaseFirestore
+import FirebaseStorage
 
 struct Location: Identifiable{
     let id = UUID()
@@ -16,8 +17,114 @@ struct Location: Identifiable{
     let coordinate: CLLocationCoordinate2D
 }
 
+struct AllPostsSheet: View {
+    @ObservedObject var model = ViewModel()
+    @ObservedObject var timeformatter = TimeFormatter()
+
+    @Environment(\.dismiss) var dismiss
+    @State private var notesShown = false
+
+
+    
+    
+    var body: some View {
+        ZStack {
+            
+            
+            List(model.postList) {
+                item in
+                ZStack{
+                    HStack{
+                        if(notesShown == true) {
+                            ForEach(model.imageDictionary.filter{
+                                $0.key.contains(item.id)
+                            }.map {
+                                $0.value
+                            }
+                                    , id: \.self) { item in
+                                
+                                Image(uiImage: item)
+                                    .resizable()
+                                    .frame(width: 390, height: 600)
+                                    .opacity(0.5)
+                                
+                            }
+                                    .frame(width: 390, height: 600)
+                                    .foregroundColor(.white)
+                                    .overlay(alignment: .center) {
+                                        VStack{
+                                            HStack{
+                                                VStack{
+                                                    
+                                                    //PROFILEPIC JA DATE ADDED
+                                                    Text("\(timeformatter.formatDate(date: item.timeAdded))")
+                                                        .padding()
+                                                }
+                                            }
+                                            Spacer()
+                                            HStack {
+                                                Image(systemName:"person.fill")
+                                                    .font(.system(size: 50))
+                                                Circle()
+                                                    .fill(Color.red)
+                                                    .frame(width: 150, height: 150)
+                                                    .padding(30)
+                                            }
+                                            Spacer()
+                                            HStack {
+                                                //NOTES
+                                                Text("\(item.notes)")
+                                            } .frame(width: 350)
+                                            Spacer()
+                                        }
+                                    }
+                                    .onTapGesture(count: 1) {
+                                        notesShown.toggle()
+                                    }
+                        } else {
+                            ForEach(model.imageDictionary.filter{
+                                $0.key.contains(item.id)
+                            }.map {
+                                $0.value
+                            }
+                                    , id: \.self) { item in
+                                
+                                Image(uiImage: item)
+                                    .resizable()
+                                    .frame(width: 390, height: 600)
+                                
+                            }
+                                    .frame(width: 390, height: 600)
+                                    .onTapGesture(count: 1) {
+                                        notesShown.toggle()
+                                    }
+                            
+                        }
+                        
+                        
+                        
+                        
+                    }
+                }
+                
+                
+                
+            }
+            
+        }.onAppear {
+            model.retreiveAllPostPhotos()
+            model.getPosts()
+        
+    }
+    }
+    
+}
+
+
 
 struct HomeView: View {
+    
+    @State private var isVisible = false
     
     @StateObject var locationManager = LocationManager()
     
@@ -27,7 +134,7 @@ struct HomeView: View {
     )
     @Binding var markerLocations:[MapMarkers]
     @State var locations = [
-
+        
     ]
     
     var body: some View {
@@ -38,9 +145,10 @@ struct HomeView: View {
             //                MKMapView.appearance().pointOfInterestFilter = .excludingAll
             //            }
             
+            
             AreaMap(region: $locationManager.region, markersList: $markerLocations)
             //            MapView(locations: locations, lManager: $locationManager.region)
-
+            
             VStack{
                 if let location = locationManager.location{
                     Text("**Current location:**\(location.latitude),\(location.longitude)")
@@ -51,13 +159,13 @@ struct HomeView: View {
                     
                 }
                 Spacer()
-//                LocationButton{
-//                    locationManager.requestLocation()
-//                }
-//                .frame(width: 180, height: 40)
-//                .cornerRadius(30)
-//                .symbolVariant(.fill)
-//                .foregroundColor(.white)
+                //                LocationButton{
+                //                    locationManager.requestLocation()
+                //                }
+                //                .frame(width: 180, height: 40)
+                //                .cornerRadius(30)
+                //                .symbolVariant(.fill)
+                //                .foregroundColor(.white)
                 Button("pinn"){
                     let loc = markerLocations.randomElement()
                     locationManager.randomPinn(pinn: loc ?? MapMarkers(id: "none",
@@ -70,7 +178,13 @@ struct HomeView: View {
                 }
             }
             .padding()
-            
+            Button("See all posts") {
+                isVisible.toggle()
+            }.frame(width: 100, height: 100)
+                .background(.white)
+                .sheet(isPresented: $isVisible) {
+                    AllPostsSheet()
+                }
         }
     }
 }
@@ -96,17 +210,17 @@ struct AreaMap: View {
             })
         return Map(coordinateRegion: binding, showsUserLocation: true, annotationItems: secondBinding.wrappedValue, annotationContent: {item in
             MapPin(coordinate: item.coordinate)
-                
-                
-//            MapAnnotation(coordinate:item.coordinate){
-//                Circle()
-//            }
-//            DispatchQueue.main.async{
-//                MapAnnotation(coordinate:item.coordinate){
-//                    Circle()
-//                }
-//            }
-                
+            
+            
+            //            MapAnnotation(coordinate:item.coordinate){
+            //                Circle()
+            //            }
+            //            DispatchQueue.main.async{
+            //                MapAnnotation(coordinate:item.coordinate){
+            //                    Circle()
+            //                }
+            //            }
+            
         })
         .onAppear(){
             MKMapView.appearance().mapType = .hybridFlyover
