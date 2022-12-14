@@ -259,7 +259,7 @@ struct PostView: View {
                 
                 // Save the data in the database in post collection
  
-                model.addPostData(file: path,  latitude: locationManager.location?.latitude ?? 0.0, longitude: locationManager.location?.longitude ?? 0.0, notes: notes, tripID: chosenTripID, timeAdded: Timestamp())
+                model.addPostData(file: path,  latitude: locationManager.location?.latitude ?? 58, longitude: locationManager.location?.longitude ?? 98, notes: notes, tripID: chosenTripID, timeAdded: Timestamp())
                 print("adding data succesfully")
                 
                 if selectedImage != nil {

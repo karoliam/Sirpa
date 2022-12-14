@@ -26,7 +26,7 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
             self.location = location.coordinate
             self.region = MKCoordinateRegion(
                 center: location.coordinate,
-                span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002)
+                span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
             )
         }
         

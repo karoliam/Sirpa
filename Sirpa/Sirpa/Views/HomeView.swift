@@ -254,7 +254,7 @@ struct SmallMap: View {
 //            }
                 
         })
-        .frame(width: 150, height: 150)
+        .frame(width: 200, height: 200)
         .cornerRadius(100)
         .onAppear(){
             MKMapView.appearance().mapType = .hybrid
