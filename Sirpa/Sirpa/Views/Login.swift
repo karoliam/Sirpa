@@ -92,17 +92,14 @@ struct Login: View {
                             .background(Color.white.opacity(0.9))
                             .cornerRadius(8)
                             .padding([.horizontal], 24)
-                    Button("location"){
-                        getUserID()
-                    }
-                    Text(localUserID)
+
                         //Upload button
                     if username != "" {
                         
                         
                         
                         NavigationLink (destination: ContentView().environment(\.managedObjectContext, self.viewContext)) {
-                                Text("\(localUserID)")
+                                Text("Login")
                                     .font(
                                         .custom(
                                             "AmericanTypewriter",

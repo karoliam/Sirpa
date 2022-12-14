@@ -24,7 +24,6 @@ struct AllPostsSheet: View {
     @Environment(\.dismiss) var dismiss
     @State private var notesShown = false
 
-
     
     
     var body: some View {
@@ -131,8 +130,11 @@ struct HomeView: View {
         center: CLLocationCoordinate2D(latitude: 60.223932, longitude: 24.758298),
         span: MKCoordinateSpan(latitudeDelta: 110, longitudeDelta:110)
     )
-    @State var locations=[]
+    @State var locations=[
+        MapMarkers(id: "1", coordinate: CLLocationCoordinate2D(latitude: 20, longitude: 20), file: "file", notes: "notes", timeStamp: Timestamp(), tripID: "trip", userID: "user")
+    ]
     
+
     var body: some View {
         ZStack{
             //            Map(coordinateRegion: $locationManager.region, interactionModes: [.all], showsUserLocation: true)
@@ -140,8 +142,13 @@ struct HomeView: View {
             //                MKMapView.appearance().mapType = .hybridFlyover
             //                MKMapView.appearance().pointOfInterestFilter = .excludingAll
             //            }
-            
+
             AreaMap(region: $locationManager.region, markersList: $model.mapMarkers)
+                .onAppear{
+                    MKMapView.appearance().mapType = .satelliteFlyover
+                    MKMapView.appearance().pointOfInterestFilter = .excludingAll
+                }
+            
             //            MapView(locations: locations, lManager: $locationManager.region)
             VStack{
                 Spacer()
@@ -190,7 +197,10 @@ struct HomeView: View {
                 .padding(.bottom, 50)
             }
         }
-
+        .onAppear{
+            MKMapView.appearance().mapType = .satelliteFlyover
+            MKMapView.appearance().pointOfInterestFilter = .excludingAll
+        }
     }
     init(){
         model.getPosts()
@@ -214,10 +224,7 @@ struct AreaMap: View {
         return Map(coordinateRegion: binding, showsUserLocation: true, annotationItems: markersList, annotationContent: {item in
             MapMarker(coordinate: item.coordinate)
         })
-        .onAppear(){
-            MKMapView.appearance().mapType = .satelliteFlyover
-            MKMapView.appearance().pointOfInterestFilter = .excludingAll
-        }
+
     }
 }
 struct SmallMap: View {

@@ -182,12 +182,11 @@ struct PostView: View {
                         if selectedImage != nil {
                             LocationButton{
                                 locationManager.requestLocation()
-                                selTab=0
-                                uploadPhoto()
+                                    uploadPhoto()
+                                MKMapView.appearance().mapType = .satelliteFlyover
+                                MKMapView.appearance().pointOfInterestFilter = .excludingAll
                             }
-                            
-                            .frame(width: 60, height: 30)
-                            .cornerRadius(50)
+                            .cornerRadius(25)
                             .labelStyle(.iconOnly)
                         }
                     }
@@ -267,6 +266,9 @@ struct PostView: View {
                     DispatchQueue.main.async {
                         model.retrievedImages.append(self.selectedImage!)
                         imageDictionary.updateValue(self.selectedImage!, forKey: model.postList.map{$0.id}[0])
+                        selTab=0
+                        selectedImage = nil
+                        notes = ""
                     }
                 }
                 
