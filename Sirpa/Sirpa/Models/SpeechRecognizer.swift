@@ -33,9 +33,10 @@ class SpeechRecognizer: ObservableObject {
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
     private let recognizer: SFSpeechRecognizer?
+    private let language = Locale.current.identifier
     
     init() {
-        recognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "en-US"))
+        recognizer = SFSpeechRecognizer(locale: Locale.init(identifier: language))
         
         Task(priority: .background) {
             do {
