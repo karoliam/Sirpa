@@ -125,15 +125,15 @@ struct ProfileView: View {
                                                                              }
                                                                          }
                                                                          Spacer()
-                                                                         // PROFILE PIC
-                                                                         ForEach(model.profilePhotoDictionary.filter{$0.key == getUserID()}.map{$0.value}, id: \.self) { item in
-                                                                             Image(uiImage: item)
-                                                                                 .resizable()
-                                                                                 .frame(width: 100, height: 100)
-                                                                         }
-                                                                         .frame(width: 80, height: 80)
-                                                                         .cornerRadius(100)
-                                                                         .padding(.trailing, 125)
+//                                                                         // PROFILE PIC
+//                                                                         ForEach(model.profilePhotoDictionary.filter{$0.key == getUserID()}.map{$0.value}, id: \.self) { item in
+//                                                                             Image(uiImage: item)
+//                                                                                 .resizable()
+//                                                                                 .frame(width: 100, height: 100)
+//                                                                         }
+//                                                                         .frame(width: 80, height: 80)
+//                                                                         .cornerRadius(100)
+//                                                                         .padding(.trailing, 125)
                                                                          HStack {
                                                                  
                                                                              SmallMap(region: .constant(MKCoordinateRegion(
